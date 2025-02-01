@@ -2,8 +2,10 @@ from flask import Flask, jsonify, request
 import pandas as pd
 from optimize import optimize
 from resources import resources_df
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/health', methods=['GET'])
 def health_check():
