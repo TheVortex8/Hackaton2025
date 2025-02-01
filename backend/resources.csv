@@ -1,0 +1,6 @@
+Resource Name,Deployment Time (hours),Cost per Operation ($),Units Available
+Fire Engine,60,2000,10
+Helicopter,45,8000,3
+Smoke Jumper,30,5000,5
+Tanker Plane,120,15000,2
+Ground Crew,90,3000,8
