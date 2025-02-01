@@ -1,4 +1,4 @@
-Resource Name,Deployment Time (hours),Cost per Operation ($),Units Available
+name,time,cost,units
 Fire Engine,60,2000,10
 Helicopter,45,8000,3
 Smoke Jumper,30,5000,5

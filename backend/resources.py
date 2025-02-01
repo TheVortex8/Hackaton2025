@@ -1,6 +1,4 @@
-class Resources:
-    def __init__(self, name, deployment_time, dollar_by_operation,unit_available):
-        self.name = name
-        self.deployment_time = deployment_time
-        self.dollar_by_operation = dollar_by_operation
-        self.unit_available = unit_available
+
+import pandas as pd
+
+resources_df = pd.read_csv('resources.csv')

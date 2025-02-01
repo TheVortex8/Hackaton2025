@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 import pandas as pd
+from optimize import optimize
+from resources import resources_df
 
 app = Flask(__name__)
 
@@ -17,9 +19,8 @@ def upload_file():
         return jsonify({'error': 'Invalid file format. Please upload a CSV file'}), 400
     
     try:
-        df = pd.read_csv(file)
-        # You can process the dataframe here as needed
-        return jsonify({'message': 'File uploaded successfully', 'rows': len(df)}), 200
+        file_df = pd.read_csv(file)
+        return jsonify({'result': optimize(file_df, resources_df)}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
