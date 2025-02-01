@@ -20,7 +20,8 @@ def upload_file():
     
     try:
         file_df = pd.read_csv(file)
-        return jsonify({'result': optimize(file_df, resources_df)}), 200
+        result = optimize(file_df, resources_df)
+        return jsonify({'result': result.to_dict(orient='records')}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
