@@ -1,5 +1,4 @@
 import pandas as pd
-from resources import resources_df
 
 def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame): 
     wildfires_df.sort_values(by='severity', key=lambda x: x.map({'high': 1, 'medium': 2, 'low': 3}), inplace=True)
