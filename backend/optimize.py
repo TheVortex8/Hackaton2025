@@ -1,4 +1,5 @@
 import pandas as pd
+from resources import resources_df
 
 def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame): 
     wildfires_df.sort_values(by='severity', key=lambda x: x.map({'high': 1, 'medium': 2, 'low': 3}), inplace=True)
@@ -12,33 +13,27 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
             'cost': resources_row['cost'],
             'units': resources_row['units']
         }
-
     
-    assignments = []
-    resource_iter = iter(resources.items())
-    current_resource_name, current_resource_info = next(resource_iter)
+    resource_deployments = []
+    current_resource = resources_df.iloc[0]
     for _, wildfire_row in wildfires_df.iterrows():
+        resource_deployments.append({
+            'timestamp': wildfire_row['timestamp'],
+            'estimated_fire_start_time': wildfire_row['fire_start_time'],
+            'severity': wildfire_row['severity'],
+            'assigned_resource': current_resource['name'],
+            'deploy_time': current_resource['time'],
+            'location': wildfire_row['location'],
+            'cost': current_resource['cost']
+        })
+        current_resource['units'] -= 1 
+        
+        
+        if current_resource['units'] == 0:
+            next_resource_index = resources_df.index.get_loc(current_resource.name) + 1
+            if next_resource_index >= len(resources_df): # No more resources to deploy
+                break 
+            
+            current_resource = resources_df.iloc[next_resource_index]
 
-        while current_resource_info['units'] == 0:
-            try:
-                current_resource_name, current_resource_info = next(resource_iter)
-            except StopIteration:
-                print("No more resources available.")
-                break
-
-        if current_resource_info['units'] > 0:
-
-            assignments.append({
-                'timestamp': wildfire_row['timestamp'],
-                'estimated_fire_start_time': wildfire_row['fire_start_time'],
-                'severity': wildfire_row['severity'],
-                'assigned_resource': current_resource_name,
-                'deploy_time': current_resource_info['time'],
-                'location': wildfire_row['location'],
-                'cost': current_resource_info['cost']
-            })
-            current_resource_info['units'] -= 1 
-
-   
-    assignments_df = pd.DataFrame(assignments)
-    return assignments_df
+    return pd.DataFrame(resource_deployments)
