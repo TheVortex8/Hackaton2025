@@ -17,12 +17,12 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
     current_resource = resources_df.iloc[0]
     for _, wildfire_row in wildfires_df.iterrows():
         resource_deployments.append({
-            'timestamp': wildfire_row['timestamp'],
+            'reported_time': wildfire_row['timestamp'],
             'estimated_fire_start_time': wildfire_row['fire_start_time'],
             'severity': wildfire_row['severity'],
-            'assigned_resource': current_resource['name'],
-            'deploy_time': current_resource['time'],
             'location': wildfire_row['location'],
+            'assigned_resource': current_resource['name'],
+            'deployment_time': current_resource['time'],
             'cost': current_resource['cost']
         })
         current_resource['units'] -= 1 
