@@ -23,8 +23,8 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
                 'estimated_fire_start_time': wildfire_row['fire_start_time'],
                 'severity': wildfire_row['severity'],
                 'location': wildfire_row['location'],
-                'cost': current_resource['cost'],
-                'miss_cost': damage_costs_df['cost']
+                'cost': damage_costs_df['severity' == wildfire_row['severity']]['cost'],
+                'miss_cost': damage_costs_df['severity' == wildfire_row['severity']]['cost']
             })
         else:
             resource_deployments.append({
@@ -35,12 +35,12 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
                 'assigned_resource': current_resource['name'],
                 'deployment_time': current_resource['time'],
                 'cost': current_resource['cost'],
-                'miss_cost': damage_costs_df['cost']
+                'miss_cost': damage_costs_df['severity' == wildfire_row['severity']]['cost']
             })
             current_resource['units'] -= 1 
         
         
-        if current_resource['units'] == 0:
+        if current_resource is not None and current_resource['units'] == 0:
             next_resource_index = resources_df.index.get_loc(current_resource.name) + 1
             if next_resource_index >= len(resources_df): # No more resources to deploy
                 current_resource = None 
