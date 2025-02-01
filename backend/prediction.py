@@ -1,14 +1,28 @@
-import numpy as np
 import pandas as pd
-from enum import Enum
+import numpy as np
+
+
+severity_map = {'': 0, 'low': 1, 'medium': 2, 'high': 3}
+
+# X: wildfire history
+# Y: environment history
+def categorize_by_severity(wildfire_history_df: pd.DataFrame, environment_history_df: pd.DataFrame) -> dict:
+  severity_by_timestamp = np.array([])
+  for environment_timestamp in environment_history_df['timestamp']:
+    matching_wildfires: pd.DataFrame = wildfire_history_df[wildfire_history_df['timestamp'] == environment_timestamp]
+    
+    severity_level = ''
+    if not matching_wildfires.empty:
+      severity_level = matching_wildfires['severity'].iloc[0]
+    severity_by_timestamp = np.append(severity_by_timestamp, severity_map[severity_level])
+      
+  return severity_by_timestamp
 
 if __name__ == '__main__':
-    wildfire_history = pd.read_csv('backend/dataset/historical_wildfiredata.csv')
-    env_history = pd.read_csv('backend/dataset/historical_environmental_data.csv')
-    for env_entry in env_history:
-        severity_level = ''
-        for wildfire_entry in wildfire_history:
-                if(wildfire_entry['timestamp'] == env_entry['timestamp']):
-                    severity_level = wildfire_entry['severity']
-                    break
+  wildfire_history_df = pd.read_csv('dataset/historical_wildfiredata.csv')
+  environment_history_df = pd.read_csv('dataset/historical_environmental_data.csv')
+
+  severity_by_timestamp =  categorize_by_severity(wildfire_history_df, environment_history_df)
+  
+    
             
