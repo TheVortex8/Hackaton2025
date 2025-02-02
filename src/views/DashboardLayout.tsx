@@ -107,10 +107,10 @@ export const Dashboard = ({ onReportChange }) => {
   };
 
   useEffect(() => {
-    if (responseData.result) {
-      onReportChange(responseData.result);
+    if (responseData?.result) {
+      onReportChange(responseData?.result);
     }
-  }, [responseData.result, onReportChange]);
+  }, [responseData?.result, onReportChange]);
 
   return (
     <div
@@ -129,7 +129,7 @@ export const Dashboard = ({ onReportChange }) => {
             clickedRow={clickedRow}
           />
           <DrawerTable
-            items={responseData.result}
+            items={responseData?.result}
             reports={responseData.report}
             setItems={(items) => setResponseData({ result: items })}
             clickedRow={clickedRow}
