@@ -110,12 +110,14 @@ const columns: ColumnDef<MappedItem>[] = [
     meta: {
       filterVariant: "select",
     },
-    filterFn: (row, id, filterValue) => {
-      const rowValue = row.getValue(id);
-      return Array.isArray(rowValue) && rowValue.includes(filterValue);
+    sortingFn: (rowA, rowB, columnId) => {
+      const priorityOrder = { high: 1, medium: 2, low: 3 };
+      const a = priorityOrder[rowA.getValue(columnId) as keyof typeof priorityOrder] ?? 999;
+      const b = priorityOrder[rowB.getValue(columnId) as keyof typeof priorityOrder] ?? 999;
+      return a - b;
     },
-  },
-  {
+    },
+    {
     header: "Est. Fire Start Time",
     accessorKey: "estFireStartTime",
     cell: ({ row }) => {
