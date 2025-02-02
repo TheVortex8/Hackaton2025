@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
-import { TableView } from "./TableView";
+import { Item, TableView } from "./TableView";
 import MapView from "./MapView";
 import DrawerTable from "./DrawerTable";
 
@@ -105,7 +105,7 @@ export const LogoIcon = () => {
 // Dummy dashboard component with content
 export const Dashboard = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [responseData, setResponseData] = useState<any[]>([]);
+  const [responseData, setResponseData] = useState<{result: Item[]}>([]);
   const [clickedRow, setClickedRow] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -150,6 +150,7 @@ export const Dashboard = () => {
           />
           <DrawerTable
             items={responseData.result}
+            setItems={(items) => setResponseData({ result: items })}
             clickedRow={clickedRow}
             isOpen={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}

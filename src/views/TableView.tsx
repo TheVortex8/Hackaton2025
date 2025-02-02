@@ -33,7 +33,14 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, Search } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp, Search } from "lucide-react";
+import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RangeCalendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { RangeValue } from "@react-types/shared";
+import { DateRange, DateValue } from "@react-types/calendar";
+import { getLocalTimeZone, today, fromDate } from "@internationalized/date";
 
 export type Item = {
   id: number;
@@ -197,16 +204,27 @@ const columns: ColumnDef<MappedItem>[] = [
     },
   },
 ];
-
+const itemsMapper = (item) => ({
+  id: item.id,
+  location: item.location,
+  severity: item.severity,
+  estFireStartTime: item.estimated_fire_start_time,
+  timeOfReport: item.reported_time,
+  estFireDelayTime: item.deploy_time,
+  estCost: item.cost,
+})
 function TableView({
   items,
+  setItems,
   clickedRow,
   onRowClick,
 }: {
   items: Item[];
+  setItems: (items: Item[]) => void;
   clickedRow: any;
   onRowClick: (row: MappedItem) => void;
 }) {
+  const id = useId();
   const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
   const [highlightedRow, setHighlightedRow] = useState<number | null>(null);
 
@@ -223,17 +241,17 @@ function TableView({
     }
   }, [clickedRow]);
 
-  const mappedItemsList = items.map((item) => ({
-    id: item.id,
-    location: item.location,
-    severity: item.severity,
-    estFireStartTime: item.estimated_fire_start_time,
-    timeOfReport: item.reported_time,
-    estFireDelayTime: item.deploy_time,
-    estCost: item.cost,
-  }));
-  const [mappedItems] = useState<MappedItem[]>(mappedItemsList);
-  console.log(mappedItems);
+  const mappedItemsList = items.map(itemsMapper);
+  const [mappedItems, setMappedItems] = useState<MappedItem[]>(mappedItemsList);
+
+  const [date, setDate] = useState<DateRange | null>({
+    start: fromDate(new Date(mappedItemsList.reduce((prev, curr) => 
+        new Date(curr.timeOfReport) < new Date(prev.timeOfReport) ? curr : prev
+    ).timeOfReport), getLocalTimeZone()),
+    end: fromDate(new Date(mappedItemsList.reduce((prev, curr) => 
+        new Date(curr.timeOfReport) > new Date(prev.timeOfReport) ? curr : prev
+    ).timeOfReport), getLocalTimeZone()),
+  });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([
     {
@@ -260,34 +278,70 @@ function TableView({
     enableSortingRemoval: false,
   });
 
+  const onDateChange = (value: RangeValue<DateValue>) => {
+    setDate(value);
+    if (value?.start && value?.end) {
+      const startDate = value.start.toDate('America/Montreal');
+      const endDate = value.end.toDate('America/Montreal');
+      const filtered = mappedItemsList.filter((item) => {
+        const itemDate = new Date(item.estFireStartTime);
+        return itemDate >= startDate && itemDate <= endDate;
+      })
+      setMappedItems(filtered);
+      setItems(filtered.map(item => ({
+        id: item.id,
+        location: item.location,
+        severity: item.severity,
+        estimated_fire_start_time: item.estFireStartTime,
+        reported_time: item.timeOfReport,
+        deploy_time: item.estFireDelayTime,
+        cost: item.estCost,
+      })))
+    } else {
+      setMappedItems(mappedItemsList);
+    }
+  };
+
   return (
     <div className="space-y-6 bg-background p-6 h-[200px] w-full">
-      {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        {/* Search input */}
-        <div className="w-44">
-          <Filter column={table.getColumn("location")!} />
-        </div>
-        {/* Intents select */}
-        <div className="w-36">
-          <Filter column={table.getColumn("severity")!} />
-        </div>
-        {/* Volume inputs */}
-        <div className="w-36">
-          <Filter column={table.getColumn("estFireStartTime")!} />
-        </div>
-        {/* CPC inputs */}
-        <div className="w-36">
-          <Filter column={table.getColumn("timeOfReport")!} />
-        </div>
-        {/* Traffic inputs */}
-        <div className="w-36">
-          <Filter column={table.getColumn("estFireDelayTime")!} />
-        </div>
-        {/* CPC inputs */}
-        <div className="w-36">
-          <Filter column={table.getColumn("estCost")!} />
-        </div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id={`${id}-label`}
+              variant={"outline"}
+              className={cn(
+                "group w-full justify-between bg-background px-3 font-normal outline-offset-0 hover:bg-background focus-visible:border-ring focus-visible:outline-[3px] focus-visible:outline-ring/20",
+                !date && "text-muted-foreground",
+              )}
+            >
+              <span className={cn("truncate", !date && "text-muted-foreground")}>
+                {date?.start ? (
+                  date.end ? (
+                    <>
+                      {format(date.start.toDate('America/Montreal'), "LLL dd, y")} - {format(date.end.toDate('America/Montreal'), "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(date.start.toDate('America/Montreal'), "LLL dd, y")
+                  )
+                ) : (
+                  "Pick a date range"
+                )}
+              </span>
+              <CalendarIcon
+                size={16}
+                strokeWidth={2}
+                className="shrink-0 text-muted-foreground/80 transition-colors group-hover:text-foreground"
+                aria-hidden="true"
+              />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-2" align="start">
+            <RangeCalendar 
+              value={date}
+              onChange={onDateChange} />
+          </PopoverContent>
+        </Popover>
       </div>
 
       <Table className="max-h-[100px]">

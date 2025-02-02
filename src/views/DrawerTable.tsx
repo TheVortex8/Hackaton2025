@@ -12,6 +12,7 @@ import { Item, TableView } from "./TableView";
 
 type DrawerTableProps = {
   items: Item[];
+  setItems: () => void;
   clickedRow: any;
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +22,7 @@ type DrawerTableProps = {
 
 function DrawerTable({
   items,
+  setItems,
   clickedRow,
   isOpen,
   onClose,
@@ -48,6 +50,7 @@ function DrawerTable({
             </DrawerHeader>
             <TableView
               items={items}
+              setItems={setItems}
               clickedRow={clickedRow}
               onRowClick={onRowClick}
             />
