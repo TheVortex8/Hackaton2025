@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
 import MapView from "./MapView";
 import DrawerTable from "./DrawerTable";
-import { Item } from "./table/TableView";
+import { Item } from "@/type/item";
 
 export function SidebarLayout() {
   const links = [
@@ -86,23 +86,23 @@ export const LogoIcon = () => {
 // Dummy dashboard component with content
 export const Dashboard = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [responseData, setResponseData] = useState<{ result: Item[] }>([]);
-  const [clickedRow, setClickedRow] = useState<any>(null);
+  const [responseData, setResponseData] = useState<{ result: Item[], report? }>();
+  const [clickedRow, setClickedRow] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleFileUpload = (files: File[], data: any) => {
+  const handleFileUpload = (files: File[], data) => {
     setUploadedFiles(files);
     setResponseData(data);
   };
 
-  const handleRowClick = useCallback((row: any) => {
+  const handleRowClick = useCallback((row) => {
     console.log(clickedRow);
     setClickedRow(row);
     setIsDrawerOpen(true);
     console.log("Row clicked in Dashboard:", row);
   }, []);
 
-  const handleRowClickFromTable = useCallback((row: any) => {
+  const handleRowClickFromTable = useCallback((row) => {
     console.log(clickedRow);
     setClickedRow(row);
     setIsDrawerOpen(false);

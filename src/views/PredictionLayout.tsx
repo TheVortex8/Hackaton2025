@@ -4,22 +4,20 @@ import MapView from "./MapView";
 import { predict } from "@/api/backendService";
 import { Item } from "@/type/item";
 import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
+import { Button } from "@/components/ui/button";
 
 export const Prediction = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [clickedRow, setClickedRow] = useState<any>(null);
+  const [clickedRow, setClickedRow] = useState(null);
   const [data, setData] = useState<{ result: Item[] }>({ result: [] });
-  const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
-      const result = await predict(true);
+      const result = await predict(false);
       console.log(result);
       setData(result);
     } catch (error) {
       console.error("Error in fetchData:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -27,7 +25,7 @@ export const Prediction = () => {
     fetchData();
   }, []);
 
-  const handleRowClick = useCallback((row: any) => {
+  const handleRowClick = useCallback((row) => {
     setClickedRow(row);
     setIsDrawerOpen(true);
     console.log("Row clicked in Dashboard:", row);
@@ -37,7 +35,7 @@ export const Prediction = () => {
     setIsDrawerOpen(true);
   };
 
-  const handleRowClickFromTable = useCallback((row: any) => {
+  const handleRowClickFromTable = useCallback((row) => {
     console.log(clickedRow);
     setClickedRow(row);
     setIsDrawerOpen(false);
@@ -52,6 +50,13 @@ export const Prediction = () => {
           : "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
       }
     >
+      <Button
+        variant="outline"
+        onClick={() =>  {}}
+        className="absolute bottom-30"
+      >
+        Visualize Data
+      </Button>
       <MapView
         table={data?.result}
         onRowClick={handleRowClick}

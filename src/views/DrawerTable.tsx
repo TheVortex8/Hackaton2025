@@ -32,13 +32,13 @@ export type Reports = {
 
 type DrawerTableProps = {
   items: Item[];
-  reports: Reports;
-  setItems: () => void;
-  clickedRow: any;
+  reports?: Reports;
+  setItems: (items) => void;
+  clickedRow;
   isOpen: boolean;
   onClose: () => void;
   onButtonClick: () => void;
-  onRowClick: (row: any) => void;
+  onRowClick: (row) => void;
   column?: ColumnDef<MappedItem>[];
 };
 

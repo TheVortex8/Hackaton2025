@@ -4,8 +4,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { MappedItem } from "@/type/mappedItem";
 
 type MapViewProps = {
-  table: Array<any>;
-  onRowClick: (row: any) => void;
+  table;
+  onRowClick: (row) => void;
   clickedRow?: MappedItem | null;
 };
 
@@ -106,7 +106,7 @@ const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
   useEffect(() => {
     if (clickedRow && mapRef.current) {
       const map = mapRef.current;
-      const coordinates = [clickedRow.location[1], clickedRow.location[0]];
+      const coordinates: [number, number] = [clickedRow.location[1], clickedRow.location[0]];
 
       // Create a popup
       const popup = new mapboxgl.Popup({ offset: 25 })
@@ -117,7 +117,7 @@ const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
       // Fly to the location of the clicked row
       map.flyTo({ center: coordinates, zoom: 10 });
 
-      return () => popup.remove();
+      popup.remove();
     }
   }, [clickedRow]);
 
