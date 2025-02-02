@@ -17,27 +17,40 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
+import { Reports } from "@/views/DrawerTable";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  missed: {
+    label: "Missed",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  addressed: {
+    label: "Addressed",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export function CustomChart() {
+export function CustomChart(report: Reports) {
+  console.log(report);
+  if (!report) return null;
+  const chartData = [
+    {
+      severity: "Low",
+      missed: report.severity_counts_delayed?.low,
+      addressed: report.severity_counts_addressed?.low,
+    },
+    {
+      severity: "Medium",
+      missed: report.severity_counts_delayed?.medium,
+      addressed: report.severity_counts_addressed?.medium,
+    },
+    {
+      severity: "High",
+      missed: report.severity_counts_delayed?.high,
+      addressed: report.severity_counts_addressed?.high,
+    },
+  ];
+  console.log(chartData);
   return (
     <Card>
       <CardHeader>

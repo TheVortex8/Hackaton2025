@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 import {
@@ -27,13 +27,6 @@ export function SidebarLayout() {
       href: "/prediction",
       icon: (
         <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Reports",
-      href: "/reports",
-      icon: (
-        <ReceiptTextIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
@@ -84,7 +77,7 @@ export const LogoIcon = () => {
 };
 
 // Dummy dashboard component with content
-export const Dashboard = () => {
+export const Dashboard = ({ onReportChange }) => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [responseData, setResponseData] = useState<{ result: Item[], report? }>();
   const [clickedRow, setClickedRow] = useState(null);
@@ -112,6 +105,12 @@ export const Dashboard = () => {
   const handleButtonClick = () => {
     setIsDrawerOpen(true);
   };
+
+  useEffect(() => {
+    if (responseData.result) {
+      onReportChange(responseData.result);
+    }
+  }, [responseData.result, onReportChange]);
 
   return (
     <div

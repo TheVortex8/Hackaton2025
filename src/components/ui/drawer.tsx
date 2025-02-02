@@ -38,11 +38,11 @@ const DrawerContent = React.forwardRef<
     clickedRow?: any;
   }
 >(({ className, children, clickedRow, ...props }, ref) => {
-  const [height, setHeight] = React.useState(800); // Initial height
+  const [height, setHeight] = React.useState(950); // Initial height
 
   React.useEffect(() => {
     if (clickedRow) {
-      setHeight(800);
+      setHeight(950);
     } else {
       setHeight(400);
     }
