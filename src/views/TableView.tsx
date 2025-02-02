@@ -91,7 +91,7 @@ const columns: ColumnDef<MappedItem>[] = [
       const severity = row.getValue("severity") as string;
       return (
         <div className="flex gap-1">
-            <div
+          <div
             className={cn(
               "flex h-5 items-center justify-center rounded px-2 text-xs font-medium",
               {
@@ -100,9 +100,9 @@ const columns: ColumnDef<MappedItem>[] = [
                 low: "bg-green-400/20 text-green-500",
               }[severity]
             )}
-            >
+          >
             {severity}
-            </div>
+          </div>
         </div>
       );
     },
@@ -166,6 +166,18 @@ const columns: ColumnDef<MappedItem>[] = [
     },
     meta: {
       filterVariant: "range",
+    },
+    enableSorting: true,
+    sortingFn: (rowA, rowB) => {
+      const estFireDelayTimeA = Math.abs(
+        new Date(rowA.getValue("timeOfReport")).getTime() -
+          new Date(rowA.getValue("estFireStartTime")).getTime()
+      );
+      const estFireDelayTimeB = Math.abs(
+        new Date(rowB.getValue("timeOfReport")).getTime() -
+          new Date(rowB.getValue("estFireStartTime")).getTime()
+      );
+      return estFireDelayTimeA - estFireDelayTimeB;
     },
   },
   {
