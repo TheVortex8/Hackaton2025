@@ -76,21 +76,21 @@ function TableView({
   const [date, setDate] = useState<DateRange | null>({
     start: fromDate(
       new Date(
-        mappedItemsList.reduce((prev, curr) =>
+        mappedItemsList.length && mappedItemsList?.reduce((prev, curr) =>
           new Date(curr.timeOfReport) < new Date(prev.timeOfReport)
             ? curr
             : prev
-        ).timeOfReport
+        )?.timeOfReport
       ),
       getLocalTimeZone()
     ),
     end: fromDate(
       new Date(
-        mappedItemsList.reduce((prev, curr) =>
+        mappedItemsList.length && mappedItemsList?.reduce((prev, curr) =>
           new Date(curr.timeOfReport) > new Date(prev.timeOfReport)
             ? curr
             : prev
-        ).timeOfReport
+        )?.timeOfReport
       ),
       getLocalTimeZone()
     ),

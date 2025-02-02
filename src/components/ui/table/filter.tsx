@@ -22,12 +22,12 @@ export function Filter({
       const values = Array.from(column.getFacetedUniqueValues().keys());
   
       // If the values are arrays, flatten them and get unique items
-      const flattenedValues = values.reduce((acc: string[], curr) => {
+      const flattenedValues = values?.reduce<string[]>((acc, curr) => {
         if (Array.isArray(curr)) {
           return [...acc, ...curr];
         }
         return [...acc, curr];
-      }, []);
+      }, []) ?? [];
   
       // Get unique values and sort them
       return Array.from(new Set(flattenedValues)).sort();
