@@ -4,9 +4,6 @@ import pandas as pd
 from optimize import optimize
 from resources import resources_df
 from flask_cors import CORS
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)
@@ -14,9 +11,13 @@ CORS(app)
 @app.route('/predictions', methods=['GET'])
 def get_predictions():
     csv_file_path = 'generated/predictions.csv'
-    with open(csv_file_path, 'rb') as f:
-        csv_data = f.read()
-    return csv_data, 200, {'Content-Type': 'text/csv'}
+    try:
+        predictions = pd.read_csv(csv_file_path).to_dict(orient='records')
+        for i, row in enumerate(predictions):
+            row['id'] = i + 1
+        return jsonify({'predictions': predictions}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
