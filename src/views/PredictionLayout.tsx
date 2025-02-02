@@ -4,6 +4,11 @@ import MapView from "./MapView";
 import { predict } from "@/api/backendService";
 import { Item } from "@/type/item";
 import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { RefreshCcw } from "lucide-react";
+import { useDropzone } from "react-dropzone";
+import { Button } from "@/components/ui/button";
 
 export const Prediction = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -13,7 +18,7 @@ export const Prediction = () => {
 
   const fetchData = async () => {
     try {
-      const result = await predict(true);
+      const result = await predict(false);
       console.log(result);
       setData(result);
     } catch (error) {
@@ -52,6 +57,13 @@ export const Prediction = () => {
           : "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
       }
     >
+      <Button
+        variant="outline"
+        onClick={() =>  {}}
+        className="absolute bottom-30"
+      >
+        Visualize Data
+      </Button>
       <MapView
         table={data?.result}
         onRowClick={handleRowClick}
