@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -6,9 +5,9 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Item, TableView } from "./TableView";
+import { TableView } from "./table/TableView";
+import { Item } from "@/type/item";
 
 type DrawerTableProps = {
   items: Item[];

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MappedItem } from "./TableView";
+import { MappedItem } from "@/type/mappedItem";
 
 type MapViewProps = {
   table: Array<any>;

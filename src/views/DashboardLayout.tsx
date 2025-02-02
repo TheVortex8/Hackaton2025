@@ -3,47 +3,30 @@ import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 import {
   LayoutDashboard,
-  History,
-  Receipt,
   MapIcon,
-  BotMessageSquare,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
-import { Item, TableView } from "./TableView";
 import MapView from "./MapView";
 import DrawerTable from "./DrawerTable";
+import { Item } from "./table/TableView";
 
 export function SidebarLayout() {
   const links = [
     {
       label: "Dashboard",
-      href: "#",
+      href: "/",
       icon: (
         <LayoutDashboard className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
-      label: "Map",
-      href: "#",
+      label: "Prediction",
+      href: "/prediction",
       icon: (
         <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    },
-    {
-      label: "History",
-      href: "#",
-      icon: (
-        <History className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "Report",
-      href: "#",
-      icon: (
-        <Receipt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
+    }
   ];
   const [open, setOpen] = useState(false);
   return (
@@ -56,17 +39,6 @@ export function SidebarLayout() {
               <SidebarLink key={idx} link={link} />
             ))}
           </div>
-        </div>
-        <div>
-          <SidebarLink
-            link={{
-              label: "Ask AI",
-              href: "#",
-              icon: (
-                <BotMessageSquare className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-              ),
-            }}
-          />
         </div>
       </SidebarBody>
     </Sidebar>
@@ -85,7 +57,7 @@ export const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium text-black dark:text-white whitespace-pre"
       >
-        Baywatch
+       Fire Watch
       </motion.span>
     </Link>
   );
@@ -140,6 +112,7 @@ export const Dashboard = () => {
           : "flex flex-col w-full pl-6"
       }
     >
+      
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>

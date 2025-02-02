@@ -80,8 +80,10 @@ def generate_predictions(model: RandomForestClassifier):
     location = f"{latitude},{longitude}"
 
     predictions.append({
+      'id': index,
       "timestamp":future_environment_df["timestamp"][index],
-      "fire_start_time": future_environment_df["timestamp"][index],
+      "estimated_fire_start_time": future_environment_df["timestamp"][index],
+      "reported_time": future_environment_df["timestamp"][index],
       "location": location,
       "severity": severity,   
     })

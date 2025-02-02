@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Dashboard, SidebarLayout } from "./views/DashboardLayout";
 import "./App.css";
 import { cn } from "./lib/utils";
+import { Prediction } from "./views/PredictionLayout";
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <SidebarLayout />
 
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/prediction" element={<Prediction />} />
           {/* Other routes */}
         </Routes>
       </div>
