@@ -47,5 +47,4 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
                 current_resource = None 
             else:
                 current_resource = resources_df.iloc[next_resource_index]
-    print(pd.DataFrame(resource_deployments))   
     return pd.DataFrame(resource_deployments)
