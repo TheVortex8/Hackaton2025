@@ -16,10 +16,11 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
     
     resource_deployments = []
     current_resource = resources_df.iloc[0]
-    for _, wildfire_row in wildfires_df.iterrows():
+    for index, wildfire_row in wildfires_df.iterrows():
         miss_cost = damage_costs_df[damage_costs_df['severity'] == wildfire_row['severity']]['cost'].values[0]
         if current_resource is None:
             resource_deployments.append({
+                'id': index,
                 'reported_time': wildfire_row['timestamp'],
                 'estimated_fire_start_time': wildfire_row['fire_start_time'],
                 'severity': wildfire_row['severity'],
@@ -29,6 +30,7 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
             })
         else:
             resource_deployments.append({
+                'id': index,
                 'reported_time': wildfire_row['timestamp'],
                 'estimated_fire_start_time': wildfire_row['fire_start_time'],
                 'severity': wildfire_row['severity'],
