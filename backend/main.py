@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 import numpy as np
 import pandas as pd
 from optimize import optimize
@@ -11,9 +11,12 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "healthy", "message": "API is up and running"}), 200
+@app.route('/predictions', methods=['GET'])
+def get_predictions():
+    csv_file_path = 'generated/predictions.csv'
+    with open(csv_file_path, 'rb') as f:
+        csv_data = f.read()
+    return csv_data, 200, {'Content-Type': 'text/csv'}
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -27,8 +30,9 @@ def upload_file():
     try:
         file_df = pd.read_csv(file)
         file_df['location'] = file_df['location'].apply(lambda x: [float(coord) for coord in x.split(',')])
-        result = optimize(file_df, resources_df).replace({np.nan: None}).to_dict(orient='records')
-        return jsonify({'result': result}), 200
+        optimization_result = optimize(file_df, resources_df)
+        cleaned_result = optimization_result.replace({np.nan: None}).to_dict(orient='records')
+        return jsonify({'result': cleaned_result}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
