@@ -75,21 +75,15 @@ def generate_predictions(model: RandomForestClassifier):
     if(severity == 0):
       continue
 
-
-    
-
-
     latitude = future_environment_df["latitude"][index]
     longitude = future_environment_df["longitude"][index]
-
-    location = f"{latitude},{longitude}"
 
     predictions.append({
       'id': index,
       "timestamp":future_environment_df["timestamp"][index],
       "estimated_fire_start_time": future_environment_df["timestamp"][index],
       "reported_time": future_environment_df["timestamp"][index],
-      "location": location,
+      "location": [latitude, longitude],
       "latitude": latitude,
       "longitude": longitude,
       "severity": severity_map_inversed[severity],   
