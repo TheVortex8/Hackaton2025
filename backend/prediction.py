@@ -36,7 +36,7 @@ def categorize_by_severity(wildfire_history_df: pd.DataFrame, environment_histor
 def create_model(environment_history_df_values: np.ndarray,severity_by_timestamp:np.ndarray[int]) -> RandomForestClassifier:
   X = environment_history_df_values
   y = severity_by_timestamp
-  X_train, X_test, y_train, y_test = train_test_split(X,y )
+  X_train, X_test, y_train, y_test = train_test_split(X, y)
 
   model = RandomForestClassifier(class_weight={0: 1, 1: 20, 2: 20, 3: 20}, random_state=42, min_samples_leaf=1, max_features='sqrt')
   smote = SMOTE(sampling_strategy={1: 3500, 2: 3500, 3: 3500},  random_state=42)
@@ -51,17 +51,19 @@ def create_model(environment_history_df_values: np.ndarray,severity_by_timestamp
   print("Predictions : ", y_pred)
   return model
 
+# EXTERNAL USE FUNCTIONS
+
 def train_model() -> pd.DataFrame:
   print("Training model...")
   wildfire_history_df = pd.read_csv('dataset/historical_wildfiredata.csv')
   environment_history_df = pd.read_csv('dataset/historical_environmental_data.csv')
 
-  environment_data = get_environment_data(environment_history_df)
+  future_environment = get_environment_data(environment_history_df)
   severity_by_timestamp =  categorize_by_severity(wildfire_history_df, environment_history_df)
 
-  return create_model(environment_data, severity_by_timestamp)
+  return create_model(future_environment, severity_by_timestamp)
 
-def generate_predictions(model): 
+def generate_predictions(model: RandomForestClassifier): 
   future_environment_df = pd.read_csv('dataset/future_environmental_data.csv')
   future_environment = get_environment_data(future_environment_df)
   predicted_severity_list =  model.predict(future_environment)
