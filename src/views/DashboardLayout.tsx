@@ -122,7 +122,7 @@ export const Dashboard = () => {
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>
-          <MapView />
+          <MapView table={responseData?.result} />
           <DrawerTable items={responseData.result} />
         </>
       )}

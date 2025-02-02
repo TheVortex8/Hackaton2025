@@ -12,12 +12,6 @@ import {
 import { Item, TableView } from "./TableView";
 
 function DrawerTable({ items }: { items: Item[] }) {
-  const [goal, setGoal] = React.useState(350);
-
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
-  }
-
   return (
     <Drawer>
       <DrawerTrigger className="absolute bottom-10" asChild>
