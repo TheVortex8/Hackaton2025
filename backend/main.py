@@ -1,24 +1,41 @@
+from prediction import generate_predictions, train_model
 from flask import Flask, jsonify, request, send_file
 import numpy as np
 import pandas as pd
 from optimize import optimize
 from resources import resources_df
 from flask_cors import CORS
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/predictions', methods=['GET'])
-def get_predictions():
-    csv_file_path = 'generated/predictions.csv'
+model = None
+
+@app.route('/predict', methods=['GET'])
+def predict():
     try:
-        predictions = pd.read_csv(csv_file_path).to_dict(orient='records')
-        for i, row in enumerate(predictions):
-            row['id'] = i + 1
-        return jsonify({'predictions': predictions}), 200
+        global model
+        print(request.args)
+        if request.args.get('train').lower() == 'true':
+            model = train_model()
+        
+        if model is None:
+            raise RuntimeError('Please train the model first by calling /train')
+        return jsonify({'predictions': generate_predictions(model)}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+    
+@app.route('/train', methods=['GET'])
+def train():# -> tuple[Any, Literal[200]] | tuple[Any, Literal[500]]:
+    try:
+        global model
+        model = train_model()
+        return predict()
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:

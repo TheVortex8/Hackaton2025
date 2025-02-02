@@ -46,19 +46,29 @@ def create_model(environment_history_df_values: np.ndarray,severity_by_timestamp
 
   y_pred = model.predict(X_test)
   mse = mean_squared_error(y_test, y_pred)
-  print(f"Erreur quadratique moyenne (MSE) : {mse}")
+  print(f"MSE : {mse}")
 
-  print("Prédictions : ", y_pred)
+  print("Predictions : ", y_pred)
   return model
 
-def get_future_wildfire(model:RandomForestClassifier) -> pd.DataFrame:
+def train_model() -> pd.DataFrame:
+  print("Training model...")
+  wildfire_history_df = pd.read_csv('dataset/historical_wildfiredata.csv')
+  environment_history_df = pd.read_csv('dataset/historical_environmental_data.csv')
+
+  environment_data = get_environment_data(environment_history_df)
+  severity_by_timestamp =  categorize_by_severity(wildfire_history_df, environment_history_df)
+
+  return create_model(environment_data, severity_by_timestamp)
+
+def generate_predictions(model): 
   future_environment_df = pd.read_csv('dataset/future_environmental_data.csv')
   future_environment = get_environment_data(future_environment_df)
-  future_wildfire_severity =  model.predict(future_environment)
+  predicted_severity_list =  model.predict(future_environment)
 
-  future_wildfire = []
-  for index in range(len(future_wildfire_severity)):
-    severity = future_wildfire_severity[index]
+  predictions = []
+  for index in range(len(predicted_severity_list)):
+    severity = predicted_severity_list[index]
     if(severity == 0):
       continue
 
@@ -67,43 +77,17 @@ def get_future_wildfire(model:RandomForestClassifier) -> pd.DataFrame:
 
     location = f"{latitude},{longitude}"
 
-    future_wildfire.append({
+    predictions.append({
       "timestamp":future_environment_df["timestamp"][index],
       "fire_start_time": future_environment_df["timestamp"][index],
       "location": location,
       "severity": severity,   
     })
-  return pd.DataFrame(future_wildfire)
-
-def get_prediction() -> pd.DataFrame:
-  wildfire_history_df = pd.read_csv('dataset/historical_wildfiredata.csv')
-  environment_history_df = pd.read_csv('dataset/historical_environmental_data.csv')
-
-  environment_data = get_environment_data(environment_history_df)
-  severity_by_timestamp =  categorize_by_severity(wildfire_history_df, environment_history_df)
   
-  model = create_model(environment_data, severity_by_timestamp)
-
-  future_wildfire = get_future_wildfire(model)
-
+  for i, row in enumerate(predictions):
+    row['id'] = i + 1
   os.makedirs('generated', exist_ok=True)
-  future_wildfire.to_csv("generated/predictions.csv", index=False, encoding="utf-8")
-
-  return future_wildfire
-
-
-
-get_prediction()
-
-
-
-
-
-
-  
-
-
-
-   
+  timestamp = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
+  pd.DataFrame(predictions).to_csv(f"generated/predictions_{timestamp}.csv", index=False, encoding="utf-8")
     
-            
+  return predictions
