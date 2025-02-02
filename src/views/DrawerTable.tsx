@@ -13,8 +13,26 @@ import { ColumnDef } from "@tanstack/table-core";
 import { columnsOptimize } from "@/components/ui/table/columns";
 import { Card, CardHeader } from "@/components/ui/card";
 
+export type Reports = {
+  fires_addressed: number;
+  fires_delayed: number;
+  severity_counts_addressed: {
+    low: number;
+    medium: number;
+    high: number;
+  };
+  severity_counts_delayed: {
+    low?: number;
+    medium?: number;
+    high?: number;
+  };
+  total_damage_costs: number;
+  total_operational_costs: number;
+};
+
 type DrawerTableProps = {
   items: Item[];
+  reports: Reports;
   setItems: () => void;
   clickedRow: any;
   isOpen: boolean;
@@ -26,6 +44,7 @@ type DrawerTableProps = {
 
 function DrawerTable({
   items,
+  reports,
   setItems,
   clickedRow,
   isOpen,
@@ -34,7 +53,7 @@ function DrawerTable({
   onRowClick,
   column = columnsOptimize,
 }: DrawerTableProps) {
-  console.log(clickedRow);
+  console.log(reports);
   return (
     <>
       <Button
@@ -48,43 +67,55 @@ function DrawerTable({
         <DrawerContent className="flex" clickedRow={clickedRow}>
           <div className="w-[95vw] self-end">
             <DrawerHeader className="flex flex-row">
-              <Card className="w-[15vw]">
+              <Card className="w-[14vw]">
                 <CardHeader>
                   <DrawerTitle>Total Cost</DrawerTitle>
-                  <DrawerDescription>
-                    Click on a row to visualize the data
+                  <DrawerDescription className="text-lg">
+                    {(
+                      reports.total_damage_costs +
+                      reports.total_operational_costs
+                    ).toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[15vw]">
+              <Card className="w-[14vw] border-green-500">
                 <CardHeader>
                   <DrawerTitle>Fire Addressed</DrawerTitle>
-                  <DrawerDescription>
-                    Click on a row to visualize the data
+                  <DrawerDescription className="text-green-500 text-lg">
+                    {reports.fires_addressed}
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[15vw]">
+              <Card className="w-[14vw] border-red-500">
                 <CardHeader>
                   <DrawerTitle>Fire Missed</DrawerTitle>
-                  <DrawerDescription>
-                    Click on a row to visualize the data
+                  <DrawerDescription className="text-red-500 text-lg">
+                    {reports.fires_delayed}
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[15vw]">
+              <Card className="w-[14vw] border-red-500">
                 <CardHeader>
                   <DrawerTitle>Operational Cost</DrawerTitle>
-                  <DrawerDescription>
-                    Click on a row to visualize the data
+                  <DrawerDescription className="text-red-500 text-lg">
+                    {reports.total_operational_costs.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[15vw]">
+              <Card className="w-[14vw] border-red-500">
                 <CardHeader>
                   <DrawerTitle>Damage Cost</DrawerTitle>
-                  <DrawerDescription>
-                    Click on a row to visualize the data
+                  <DrawerDescription className="text-red-500 text-lg">
+                    {reports.total_damage_costs.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })}
                   </DrawerDescription>
                 </CardHeader>
               </Card>

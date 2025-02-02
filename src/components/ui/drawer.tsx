@@ -76,7 +76,7 @@ const DrawerContent = React.forwardRef<
           height,
           className
         )}
-        style={{ height: `${height}px` }}
+        style={{ height: `${height / 10}vh` }}
         {...props}
       >
         <div

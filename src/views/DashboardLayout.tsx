@@ -1,7 +1,12 @@
 import { useState, useCallback } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { LayoutDashboard, MapIcon, ReceiptTextIcon } from "lucide-react";
+import {
+  FlameIcon,
+  LayoutDashboard,
+  MapIcon,
+  ReceiptTextIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
 import MapView from "./MapView";
@@ -55,7 +60,7 @@ export const Logo = () => {
       to="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <FlameIcon className="text-red-500 h-5 w-5 flex-shrink-0" />
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -73,7 +78,7 @@ export const LogoIcon = () => {
       to="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
-      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0" />
+      <FlameIcon className="text-red-500 h-5 w-5 flex-shrink-0" />
     </Link>
   );
 };
@@ -126,6 +131,7 @@ export const Dashboard = () => {
           />
           <DrawerTable
             items={responseData.result}
+            reports={responseData.report}
             setItems={(items) => setResponseData({ result: items })}
             clickedRow={clickedRow}
             isOpen={isDrawerOpen}
