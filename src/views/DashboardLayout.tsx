@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
 import { TableView } from "./TableView";
 import MapView from "./MapView";
-
+import DrawerTable from "./DrawerTable";
 export function SidebarLayout() {
   const links = [
     {
@@ -104,20 +104,26 @@ export const LogoIcon = () => {
 // Dummy dashboard component with content
 export const Dashboard = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [responseData, setResponseData] = useState<any[]>([]);
+
+  const handleFileUpload = (files: File[], data: any) => {
+    setUploadedFiles(files);
+    setResponseData(data);
+  };
 
   return (
     <div
       className={
         uploadedFiles.length > 0
-          ? "flex flex-col items-center  h-full overflow-y-auto bg-white pl-12 w-full"
+          ? "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
           : "flex flex-col w-full pl-6"
       }
     >
-      <FileUploadView onChange={setUploadedFiles} />
+      <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>
           <MapView />
-          <TableView />
+          <DrawerTable items={responseData.result} />
         </>
       )}
     </div>

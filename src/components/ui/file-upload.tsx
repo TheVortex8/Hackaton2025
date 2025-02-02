@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { IconUpload } from "@tabler/icons-react";
 import { useDropzone } from "react-dropzone";
+import { UploadCloud } from "lucide-react";
 
 const mainVariant = {
   initial: {
@@ -78,7 +79,7 @@ export const FileUpload = ({
               <GridPattern />
             </div>
           )}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-end justify-center">
             {!file && (
               <>
                 <p className="relative z-20 font-sans font-bold text-neutral-700 dark:text-neutral-300 text-base">
@@ -92,7 +93,7 @@ export const FileUpload = ({
             <div
               className={
                 file
-                  ? "relative w-full max-w-xl mx-auto"
+                  ? "relative w-full max-w-[4.5vw]"
                   : "relative w-full mt-10 max-w-xl mx-auto"
               }
             >
@@ -101,26 +102,22 @@ export const FileUpload = ({
                   key={"file"}
                   layoutId="file-upload"
                   className={cn(
-                    "relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-16 p-4 w-full mx-auto rounded-md",
+                    "relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-center justify-center md:h-16 w-full mx-auto rounded-md",
                     "shadow-sm"
                   )}
                 >
-                  <div className="flex justify-between w-full items-center gap-4">
+                  <div className="flex justify-center w-full h-full items-center gap-4">
                     <motion.p
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
+                      whileHover={{ scale: 1.3 }}
                       layout
-                      className="text-base text-neutral-700 dark:text-neutral-300 truncate max-w-xs"
+                      className="text-base text-neutral-700 dark:text-neutral-300 w-full h-full truncate max-w-xs flex items-center justify-center"
                     >
-                      {file.name}
-                    </motion.p>
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      layout
-                      className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 "
-                    >
-                      {file.type}
+                      <UploadCloud
+                        size={30}
+                        className=" text-neutral-600 dark:text-neutral-300"
+                      />
                     </motion.p>
                   </div>
                 </motion.div>

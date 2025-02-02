@@ -43,19 +43,27 @@ declare module "@tanstack/react-table" {
   }
 }
 
-type Item = {
+export type Item = {
   id: string;
-  keyword: string;
-  intents: Array<
-    "Informational" | "Navigational" | "Commercial" | "Transactional"
-  >;
-  volume: number;
-  cpc: number;
-  traffic: number;
-  link: string;
+  location: Array<number>;
+  severity: Array<"High" | "Medium" | "Low">;
+  estimated_fire_start_time: string;
+  reported_time: string;
+  deploy_time: number;
+  cost: number;
 };
 
-const columns: ColumnDef<Item>[] = [
+type MappedItem = {
+  id: string;
+  location: Array<number>;
+  severity: Array<"High" | "Medium" | "Low">;
+  estFireStartTime: string;
+  timeOfReport: string;
+  estFireDelayTime: number;
+  estCost: number;
+};
+
+const columns: ColumnDef<MappedItem>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -77,39 +85,31 @@ const columns: ColumnDef<Item>[] = [
     ),
   },
   {
-    header: "Keyword",
-    accessorKey: "keyword",
+    header: "Location",
+    accessorKey: "location",
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("keyword")}</div>
+      <div className="font-medium">{row.getValue("location")}</div>
     ),
   },
   {
-    header: "Intents",
-    accessorKey: "intents",
+    header: "Severity",
+    accessorKey: "severity",
     cell: ({ row }) => {
-      const intents = row.getValue("intents") as string[];
+      const severity = row.getValue("severity") as string;
       return (
         <div className="flex gap-1">
-          {intents.map((intent) => {
-            const styles = {
-              Informational: "bg-indigo-400/20 text-indigo-500",
-              Navigational: "bg-emerald-400/20 text-emerald-500",
-              Commercial: "bg-amber-400/20 text-amber-500",
-              Transactional: "bg-rose-400/20 text-rose-500",
-            }[intent];
-
-            return (
-              <div
-                key={intent}
-                className={cn(
-                  "flex size-5 items-center justify-center rounded text-xs font-medium",
-                  styles
-                )}
-              >
-                {intent.charAt(0)}
-              </div>
-            );
-          })}
+          <div
+            className={cn(
+              "flex size-5 items-center justify-center rounded text-xs font-medium",
+              {
+                High: "bg-red-400/20 text-red-500",
+                Medium: "bg-yellow-400/20 text-yellow-500",
+                Low: "bg-green-400/20 text-green-500",
+              }[severity]
+            )}
+          >
+            {severity}
+          </div>
         </div>
       );
     },
@@ -123,144 +123,92 @@ const columns: ColumnDef<Item>[] = [
     },
   },
   {
-    header: "Volume",
-    accessorKey: "volume",
+    header: "Est. Fire Start Time",
+    accessorKey: "estFireStartTime",
     cell: ({ row }) => {
-      const volume = parseInt(row.getValue("volume"));
-      return new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(volume);
+      return new Date(row.getValue("estFireStartTime")).toLocaleString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }
+      );
     },
     meta: {
       filterVariant: "range",
     },
   },
   {
-    header: "CPC",
-    accessorKey: "cpc",
-    cell: ({ row }) => <div>${row.getValue("cpc")}</div>,
-    meta: {
-      filterVariant: "range",
-    },
-  },
-  {
-    header: "Traffic",
-    accessorKey: "traffic",
+    header: "Time of Report",
+    accessorKey: "timeOfReport",
     cell: ({ row }) => {
-      const traffic = parseInt(row.getValue("traffic"));
-      return new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumFractionDigits: 1,
-      }).format(traffic);
+      return new Date(row.getValue("timeOfReport")).toLocaleString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
     },
     meta: {
       filterVariant: "range",
     },
   },
   {
-    header: "Link",
-    accessorKey: "link",
-    cell: ({ row }) => (
-      <a
-        className="inline-flex items-center gap-1 hover:underline"
-        href={row.getValue("link")}
-        target="_blank"
-      >
-        {row.getValue("link")}{" "}
-        <ExternalLink size={12} strokeWidth={2} aria-hidden="true" />
-      </a>
-    ),
-    enableSorting: false,
+    header: "Estimated Fire Delay Time",
+    accessorKey: "estFireDelayTime",
+    cell: ({ row }) => {
+      const estFireStartTime = new Date(row.getValue("estFireStartTime"));
+      const timeOfReport = new Date(row.getValue("timeOfReport"));
+      const estFireDelayTime = Math.abs(
+        timeOfReport.getTime() - estFireStartTime.getTime()
+      );
+      const minutes = Math.floor(estFireDelayTime / (1000 * 60));
+      return `${minutes} minutes`;
+    },
+    meta: {
+      filterVariant: "range",
+    },
+  },
+  {
+    header: "Estimated Cost",
+    accessorKey: "estCost",
+    cell: ({ row }) => {
+      return `$${(row.getValue("estCost") as number).toFixed(2)}`;
+    },
+    meta: {
+      filterVariant: "range",
+    },
   },
 ];
 
-const items: Item[] = [
-  {
-    id: "1",
-    keyword: "react components",
-    intents: ["Informational", "Navigational"],
-    volume: 2507,
-    cpc: 2.5,
-    traffic: 88,
-    link: "#",
-  },
-  {
-    id: "2",
-    keyword: "buy react templates",
-    intents: ["Commercial", "Transactional"],
-    volume: 1850,
-    cpc: 4.75,
-    traffic: 65,
-    link: "#",
-  },
-  {
-    id: "3",
-    keyword: "react ui library",
-    intents: ["Informational", "Commercial"],
-    volume: 3200,
-    cpc: 3.25,
-    traffic: 112,
-    link: "#",
-  },
-  {
-    id: "4",
-    keyword: "tailwind components download",
-    intents: ["Transactional"],
-    volume: 890,
-    cpc: 1.95,
-    traffic: 45,
-    link: "#",
-  },
-  {
-    id: "5",
-    keyword: "react dashboard template free",
-    intents: ["Commercial", "Transactional"],
-    volume: 4100,
-    cpc: 5.5,
-    traffic: 156,
-    link: "#",
-  },
-  {
-    id: "6",
-    keyword: "how to use react components",
-    intents: ["Informational"],
-    volume: 1200,
-    cpc: 1.25,
-    traffic: 42,
-    link: "#",
-  },
-  {
-    id: "7",
-    keyword: "react ui kit premium",
-    intents: ["Commercial", "Transactional"],
-    volume: 760,
-    cpc: 6.8,
-    traffic: 28,
-    link: "#",
-  },
-  {
-    id: "8",
-    keyword: "react component documentation",
-    intents: ["Informational", "Navigational"],
-    volume: 950,
-    cpc: 1.8,
-    traffic: 35,
-    link: "#",
-  },
-];
-
-function TableView() {
+function TableView({ items }: { items: Item[] }) {
+  console.log(items);
+  const mappedItems = items.map((item) => ({
+    id: item.id,
+    location: item.location,
+    severity: item.severity,
+    estFireStartTime: item.estimated_fire_start_time,
+    timeOfReport: item.reported_time,
+    estFireDelayTime: item.deploy_time,
+    estCost: item.cost,
+  }));
+  console.log(mappedItems);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: "traffic",
+      id: "location",
       desc: false,
     },
   ]);
 
   const table = useReactTable({
-    data: items,
+    data: mappedItems,
     columns,
     state: {
       sorting,
@@ -278,32 +226,36 @@ function TableView() {
   });
 
   return (
-    <div className="space-y-6 bg-background p-6 h-[1000px] w-full">
+    <div className="space-y-6 bg-background p-6 h-[200px] w-full">
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         {/* Search input */}
         <div className="w-44">
-          <Filter column={table.getColumn("keyword")!} />
+          <Filter column={table.getColumn("location")!} />
         </div>
         {/* Intents select */}
         <div className="w-36">
-          <Filter column={table.getColumn("intents")!} />
+          <Filter column={table.getColumn("severity")!} />
         </div>
         {/* Volume inputs */}
         <div className="w-36">
-          <Filter column={table.getColumn("volume")!} />
+          <Filter column={table.getColumn("estFireStartTime")!} />
         </div>
         {/* CPC inputs */}
         <div className="w-36">
-          <Filter column={table.getColumn("cpc")!} />
+          <Filter column={table.getColumn("timeOfReport")!} />
         </div>
         {/* Traffic inputs */}
         <div className="w-36">
-          <Filter column={table.getColumn("traffic")!} />
+          <Filter column={table.getColumn("estFireDelayTime")!} />
+        </div>
+        {/* CPC inputs */}
+        <div className="w-36">
+          <Filter column={table.getColumn("estCost")!} />
         </div>
       </div>
 
-      <Table>
+      <Table className="max-h-[100px]">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="bg-muted/50">

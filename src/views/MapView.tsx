@@ -19,8 +19,8 @@ const MapView = () => {
   }, []);
 
   return (
-    <div className="w-[90vw] border rounded-lg overflow-hidden">
-      <div ref={mapContainerRef} className="h-[calc(100vh-154px)]" />
+    <div className="w-[91vw] border rounded-lg overflow-hidden">
+      <div ref={mapContainerRef} className="h-[calc(100vh-50px)]" />
     </div>
   );
 };

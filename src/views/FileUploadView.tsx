@@ -4,15 +4,33 @@ import { useState } from "react";
 export function FileUploadView({
   onChange,
 }: {
-  onChange?: (files: File[]) => void;
+  onChange?: (files: File[], responseData?: any[]) => void;
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const handleFileUpload = (newFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-    console.log(files);
-    if (onChange) {
-      onChange(newFiles);
-    }
+
+    const formData = new FormData();
+    formData.append("file", newFiles[0]);
+    console.log(import.meta.env.VITE_BASE_SERVER_URL);
+
+    fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("File uploaded successfully:", data);
+        if (onChange) {
+          onChange(newFiles, data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+        if (onChange) {
+          onChange(newFiles, null);
+        }
+      });
   };
 
   return (
@@ -20,7 +38,7 @@ export function FileUploadView({
       className={
         !(files.length > 0)
           ? "p-2 md:p-10 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col justify-center gap-2 flex-1 w-full h-full"
-          : "rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 w-full border-none"
+          : "absolute left-0 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 w-[95vw] border-none"
       }
     >
       <div
