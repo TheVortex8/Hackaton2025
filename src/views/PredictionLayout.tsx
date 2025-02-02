@@ -5,15 +5,18 @@ import { predict } from "@/api/backendService";
 import { Item } from "@/type/item";
 import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
 import { Button } from "@/components/ui/button";
+import React from "react";
+import { RefreshCcw } from "lucide-react";
 
 export const Prediction = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [clickedRow, setClickedRow] = useState(null);
   const [data, setData] = useState<{ result: Item[] }>({ result: [] });
-
-  const fetchData = async () => {
+    const [loading, setLoading] = useState(true);
+    
+  const fetchData = async (regenerate:boolean = false) => {
     try {
-      const result = await predict(false);
+      const result = await predict(regenerate);
       console.log(result);
       setData(result);
     } catch (error) {
@@ -42,6 +45,12 @@ export const Prediction = () => {
     console.log("Row clicked in Dashboard:", row);
   }, []);
 
+  const regenerateData = async () => {
+    setLoading(true);
+    await fetchData(true);
+  }
+
+
   return (
     <div
       className={
@@ -52,10 +61,10 @@ export const Prediction = () => {
     >
       <Button
         variant="outline"
-        onClick={() =>  {}}
-        className="absolute bottom-30"
+        onClick={regenerateData}
+        style={{zIndex: 10, position: "absolute", bottom: "80%", right: "9%", scale: "2"}}
       >
-        Visualize Data
+        <RefreshCcw />
       </Button>
       <MapView
         table={data?.result}
