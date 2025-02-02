@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 CORS(app)
 
-model = None
+model = train_model()
 
 @app.route('/predict', methods=['GET'])
 def predict():

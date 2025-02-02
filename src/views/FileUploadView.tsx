@@ -1,3 +1,4 @@
+import { upload } from "@/api/backendService";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 
@@ -7,30 +8,13 @@ export function FileUploadView({
   onChange?: (files: File[], responseData?: any[]) => void;
 }) {
   const [files, setFiles] = useState<File[]>([]);
-  const handleFileUpload = (newFiles: File[]) => {
+  const handleFileUpload = async (newFiles: File[]) => {
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-
-    const formData = new FormData();
-    formData.append("file", newFiles[0]);
-    console.log(import.meta.env.VITE_BASE_SERVER_URL);
-
-    fetch(`${import.meta.env.VITE_BASE_SERVER_URL}/upload`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("File uploaded successfully:", data);
-        if (onChange) {
-          onChange(newFiles, data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error uploading file:", error);
-        if (onChange) {
-          onChange(newFiles, null);
-        }
-      });
+    
+    const data = await upload(newFiles[0])
+    if (onChange) {
+      onChange(newFiles, data);
+    }
   };
 
   return (
