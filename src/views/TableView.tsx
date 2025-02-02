@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, colorMap } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -94,11 +94,7 @@ const columns: ColumnDef<MappedItem>[] = [
           <div
             className={cn(
               "flex h-5 items-center justify-center rounded px-2 text-xs font-medium",
-              {
-                high: "bg-red-400/20 text-red-500",
-                medium: "bg-orange-400/20 text-orange-500",
-                low: "bg-yellow-400/20 text-yellow-500",
-              }[severity]
+              colorMap[severity]
             )}
           >
             {severity}
