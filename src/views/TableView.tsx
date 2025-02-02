@@ -189,7 +189,7 @@ const columns: ColumnDef<MappedItem>[] = [
 
 function TableView({ items }: { items: Item[] }) {
   console.log(items);
-  const mappedItems = items.map((item) => ({
+  const mappedItemsList = items.map((item) => ({
     id: item.id,
     location: item.location,
     severity: item.severity,
@@ -198,6 +198,7 @@ function TableView({ items }: { items: Item[] }) {
     estFireDelayTime: item.deploy_time,
     estCost: item.cost,
   }));
+  const [mappedItems] = useState<MappedItem[]>(mappedItemsList);
   console.log(mappedItems);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([
@@ -207,7 +208,7 @@ function TableView({ items }: { items: Item[] }) {
     },
   ]);
 
-  const table = useReactTable({
+  const table = useReactTable<MappedItem>({
     data: mappedItems,
     columns,
     state: {
