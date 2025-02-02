@@ -106,7 +106,7 @@ const columns: ColumnDef<MappedItem>[] = [
         </div>
       );
     },
-    enableSorting: false,
+    enableSorting: true,
     meta: {
       filterVariant: "select",
     },
