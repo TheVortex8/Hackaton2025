@@ -68,18 +68,16 @@ export const Prediction = () => {
         onRowClick={handleRowClick}
         clickedRow={clickedRow}
       />
-      {data.result.length > 0 && (
-        <DrawerTable
-          items={data?.result}
-          setItems={(items) => setData({ result: items })}
-          clickedRow={clickedRow}
-          isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-          onButtonClick={handleButtonClick}
-          onRowClick={handleRowClickFromTable}
-          column={columnsPrediction}
-        />
-      )}
+      <DrawerTable
+        items={data?.result}
+        setItems={(items) => setData({ result: items })}
+        clickedRow={clickedRow}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onButtonClick={handleButtonClick}
+        onRowClick={handleRowClickFromTable}
+        column={columnsPrediction}
+      />
     </div>
   );
 };
