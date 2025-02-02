@@ -5,7 +5,6 @@ import {
   FlameIcon,
   LayoutDashboard,
   MapIcon,
-  ReceiptTextIcon,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
