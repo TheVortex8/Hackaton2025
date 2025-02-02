@@ -34,9 +34,16 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> & {
+    clickedRow?: any;
+  }
+>(({ className, children, clickedRow, ...props }, ref) => {
   const [fullHeight, setFullHeight] = React.useState(false);
+  const [clickedRowState, setClickedRowState] = React.useState(clickedRow);
+
+  React.useEffect(() => {
+    setClickedRowState(clickedRow);
+  }, [clickedRow]);
 
   return (
     <DrawerPortal>
@@ -45,13 +52,20 @@ const DrawerContent = React.forwardRef<
         ref={ref}
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col border bg-background",
-          fullHeight ? "h-[800px]" : "h-[400px]",
+          clickedRowState
+            ? "h-[800px]"
+            : fullHeight
+            ? "h-[800px]"
+            : "h-[400px]",
           className
         )}
         {...props}
       >
         <div
-          onClick={() => setFullHeight(!fullHeight)}
+          onClick={() => {
+            setFullHeight(!fullHeight);
+            setClickedRowState(null);
+          }}
           className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted"
         />
         {children}

@@ -8,3 +8,15 @@ body {
   min-height: 100vh;
 }
 
+@keyframes fadeInOut {
+  0% {
+    background-color: yellow;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.fade-in-out {
+  animation: fadeInOut 5s forwards;
+}

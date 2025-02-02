@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,22 +10,45 @@ import {
 } from "@/components/ui/drawer";
 import { Item, TableView } from "./TableView";
 
-function DrawerTable({ items }: { items: Item[] }) {
+type DrawerTableProps = {
+  items: Item[];
+  clickedRow: any;
+  isOpen: boolean;
+  onClose: () => void;
+  onButtonClick: () => void;
+};
+
+function DrawerTable({
+  items,
+  clickedRow,
+  isOpen,
+  onClose,
+  onButtonClick,
+}: DrawerTableProps) {
+  console.log(clickedRow);
   return (
-    <Drawer>
-      <DrawerTrigger className="absolute bottom-10" asChild>
-        <Button variant="outline">Visualize Data</Button>
-      </DrawerTrigger>
-      <DrawerContent className="flex">
-        <div className="w-[95vw] self-end">
-          <DrawerHeader>
-            <DrawerTitle>Move Goal</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
-          </DrawerHeader>
-          <TableView items={items} />
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <>
+      <Button
+        variant="outline"
+        onClick={onButtonClick}
+        className="absolute bottom-10"
+      >
+        Visualize Data
+      </Button>
+      <Drawer open={isOpen} onOpenChange={onClose}>
+        <DrawerContent className="flex" clickedRow={clickedRow}>
+          <div className="w-[95vw] self-end">
+            <DrawerHeader>
+              <DrawerTitle>Move Goal</DrawerTitle>
+              <DrawerDescription>
+                Set your daily activity goal.
+              </DrawerDescription>
+            </DrawerHeader>
+            <TableView items={items} clickedRow={clickedRow} />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
 

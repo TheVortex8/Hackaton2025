@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import { FileUploadView } from "./FileUploadView";
 import { TableView } from "./TableView";
 import MapView from "./MapView";
 import DrawerTable from "./DrawerTable";
+
 export function SidebarLayout() {
   const links = [
     {
@@ -105,10 +106,22 @@ export const LogoIcon = () => {
 export const Dashboard = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [responseData, setResponseData] = useState<any[]>([]);
+  const [clickedRow, setClickedRow] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleFileUpload = (files: File[], data: any) => {
     setUploadedFiles(files);
     setResponseData(data);
+  };
+
+  const handleRowClick = useCallback((row: any) => {
+    setClickedRow(row);
+    setIsDrawerOpen(true);
+    console.log("Row clicked in Dashboard:", row);
+  }, []);
+
+  const handleButtonClick = () => {
+    setIsDrawerOpen(true);
   };
 
   return (
@@ -122,8 +135,14 @@ export const Dashboard = () => {
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>
-          <MapView table={responseData?.result} />
-          <DrawerTable items={responseData.result} />
+          <MapView table={responseData?.result} onRowClick={handleRowClick} />
+          <DrawerTable
+            items={responseData.result}
+            clickedRow={clickedRow}
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            onButtonClick={handleButtonClick}
+          />
         </>
       )}
     </div>

@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,7 @@ import {
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 export type Item = {
-  id: string;
+  id: number;
   location: Array<number>;
   severity: Array<"high" | "medium" | "low">;
   estimated_fire_start_time: string;
@@ -46,7 +46,7 @@ export type Item = {
 };
 
 type MappedItem = {
-  id: string;
+  id: number;
   location: Array<number>;
   severity: Array<"high" | "medium" | "low">;
   estFireStartTime: string;
@@ -96,8 +96,8 @@ const columns: ColumnDef<MappedItem>[] = [
               "flex h-5 items-center justify-center rounded px-2 text-xs font-medium",
               {
                 high: "bg-red-400/20 text-red-500",
-                medium: "bg-yellow-400/20 text-yellow-500",
-                low: "bg-green-400/20 text-green-500",
+                medium: "bg-orange-400/20 text-orange-500",
+                low: "bg-yellow-400/20 text-yellow-500",
               }[severity]
             )}
           >
@@ -112,12 +112,16 @@ const columns: ColumnDef<MappedItem>[] = [
     },
     sortingFn: (rowA, rowB, columnId) => {
       const priorityOrder = { high: 1, medium: 2, low: 3 };
-      const a = priorityOrder[rowA.getValue(columnId) as keyof typeof priorityOrder] ?? 999;
-      const b = priorityOrder[rowB.getValue(columnId) as keyof typeof priorityOrder] ?? 999;
+      const a =
+        priorityOrder[rowA.getValue(columnId) as keyof typeof priorityOrder] ??
+        999;
+      const b =
+        priorityOrder[rowB.getValue(columnId) as keyof typeof priorityOrder] ??
+        999;
       return a - b;
     },
-    },
-    {
+  },
+  {
     header: "Est. Fire Start Time",
     accessorKey: "estFireStartTime",
     cell: ({ row }) => {
@@ -194,8 +198,22 @@ const columns: ColumnDef<MappedItem>[] = [
   },
 ];
 
-function TableView({ items }: { items: Item[] }) {
-  console.log(items);
+function TableView({ items, clickedRow }: { items: Item[]; clickedRow: any }) {
+  const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
+  const [highlightedRow, setHighlightedRow] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (clickedRow && rowRefs.current.has(clickedRow.id)) {
+      const rowElement = rowRefs.current.get(clickedRow.id);
+      if (rowElement) {
+        rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        setHighlightedRow(clickedRow.id);
+        setTimeout(() => {
+          setHighlightedRow(null);
+        }, 5000);
+      }
+    }
+  }, [clickedRow]);
   const mappedItemsList = items.map((item) => ({
     id: item.id,
     location: item.location,
@@ -338,10 +356,16 @@ function TableView({ items }: { items: Item[] }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
+            (console.log(table.getRowModel().rows, clickedRow?.id),
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
+                ref={(el) => el && rowRefs.current.set(row.original.id, el)}
                 data-state={row.getIsSelected() && "selected"}
+                className={cn(
+                  row.original.id === clickedRow?.id ? "fade-in-out" : "",
+                  row.getIsSelected() && "bg-yellow-500"
+                )}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
@@ -349,7 +373,7 @@ function TableView({ items }: { items: Item[] }) {
                   </TableCell>
                 ))}
               </TableRow>
-            ))
+            )))
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
