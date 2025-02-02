@@ -89,10 +89,10 @@ function DrawerTable({
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[14vw] border-red-500">
+              <Card className={`w-[14vw] ${reports.fires_delayed <= 0 ? 'border-green-500' : 'border-red-500'}`}>
                 <CardHeader>
                   <DrawerTitle>Fire Missed</DrawerTitle>
-                  <DrawerDescription className="text-red-500 text-lg">
+                  <DrawerDescription className={`${reports.fires_delayed <= 0 ? 'text-green-500' : 'text-red-500'} text-lg`}>
                     {reports.fires_delayed}
                   </DrawerDescription>
                 </CardHeader>
@@ -133,5 +133,6 @@ function DrawerTable({
     </>
   );
 }
+
 
 export default DrawerTable;
