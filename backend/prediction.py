@@ -91,5 +91,6 @@ def generate_predictions(model: RandomForestClassifier):
   os.makedirs('generated', exist_ok=True)
   timestamp = pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')
   pd.DataFrame(predictions).to_csv(f"generated/predictions_{timestamp}.csv", index=False, encoding="utf-8")
-    
+  
+  
   return predictions

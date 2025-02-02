@@ -49,4 +49,24 @@ def optimize(wildfires_df: pd.DataFrame, resources_df: pd.DataFrame):
                 current_resource = None 
             else:
                 current_resource = resources_df.iloc[next_resource_index]
-    return pd.DataFrame(resource_deployments)
+    resource_deployments_df = pd.DataFrame(resource_deployments)
+    
+    # Output results
+    fires_addressed = resource_deployments_df['assigned_resource'].notna().sum()
+    fires_delayed = len(resource_deployments_df) - fires_addressed
+    total_op_costs = resource_deployments_df[resource_deployments_df['assigned_resource'].notna()]['cost'].sum()
+    total_damage_costs = resource_deployments_df[resource_deployments_df['assigned_resource'].isna()]['miss_cost'].sum()
+    severity_counts_addressed = resource_deployments_df[resource_deployments_df['assigned_resource'].notna()]['severity'].value_counts().to_dict()
+    severity_counts_delayed = resource_deployments_df[resource_deployments_df['assigned_resource'].isna()]['severity'].value_counts().to_dict()
+
+    print("=======================================================")
+    print("PART 1 - OUTPUT REPORT")
+    print(f"Number of fires addressed: {fires_addressed}")
+    print(f"Number of fires delayed: {fires_delayed}")
+    print(f"Total operational costs: {total_op_costs}")
+    print(f"Estimated damage costs from delayed responses: {total_damage_costs}")
+    print(f"Fire severity report (addressed): {severity_counts_addressed}")
+    print(f"Fire severity report (delayed): {severity_counts_delayed}")
+    print("=======================================================")
+
+    return resource_deployments_df
