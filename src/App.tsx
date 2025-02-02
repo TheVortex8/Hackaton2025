@@ -4,8 +4,14 @@ import "./App.css";
 import { cn } from "./lib/utils";
 import { Prediction } from "./views/PredictionLayout";
 import { Reports } from "./views/Reports";
+import { useState } from "react";
 
 function App() {
+  const [report, setReport] = useState(null);
+
+  const handleReportChange = (newReport) => {
+    setReport(newReport);
+  };
   return (
     <Router>
       <div
@@ -17,9 +23,11 @@ function App() {
         <SidebarLayout />
 
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route
+            path="/"
+            element={<Dashboard onReportChange={handleReportChange} />}
+          />
           <Route path="/prediction" element={<Prediction />} />
-          <Route path="/reports" element={<Reports />} />
           {/* Other routes */}
         </Routes>
       </div>
