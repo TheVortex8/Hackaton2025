@@ -3,6 +3,7 @@ import { Dashboard, SidebarLayout } from "./views/DashboardLayout";
 import "./App.css";
 import { cn } from "./lib/utils";
 import { Prediction } from "./views/PredictionLayout";
+import { Reports } from "./views/Reports";
 
 function App() {
   return (
@@ -16,8 +17,9 @@ function App() {
         <SidebarLayout />
 
         <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/prediction" element={<Prediction />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/prediction" element={<Prediction />} />
+          <Route path="/reports" element={<Reports />} />
           {/* Other routes */}
         </Routes>
       </div>

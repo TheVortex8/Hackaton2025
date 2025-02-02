@@ -111,9 +111,7 @@ const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
       // Create a popup
       const popup = new mapboxgl.Popup({ offset: 25 })
         .setLngLat(coordinates)
-        .setHTML(
-          `<h3>${clickedRow.location}</h3><p>Severity: ${clickedRow.severity}</p>`
-        )
+        .setHTML(``)
         .addTo(map);
 
       // Fly to the location of the clicked row

@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useId, useRef, useState } from "react";
-
+import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   ColumnDef,
@@ -23,7 +23,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { CalendarIcon, ChevronDown, ChevronUp, Filter } from "lucide-react";
+import { CalendarIcon, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -35,9 +35,15 @@ import { format } from "date-fns";
 import { RangeValue } from "@react-types/shared";
 import { DateRange, DateValue } from "@react-types/calendar";
 import { getLocalTimeZone, fromDate } from "@internationalized/date";
-import { columns as columnOptimize} from "@/components/ui/table/columns";
+import { columns as columnOptimize } from "@/components/ui/table/columns";
 import { MappedItem } from "@/type/mappedItem";
 import { Item } from "@/type/item";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+} from "@radix-ui/react-dropdown-menu";
 
 const itemsMapper = (item: Item) => ({
   id: item.id,
@@ -59,12 +65,15 @@ function TableView({
   items: Item[];
   setItems: (items: Item[]) => void;
   clickedRow: any;
-  onRowClick: (row: MappedItem) => void; 
-  columns: ColumnDef<MappedItem>[] ;
+  onRowClick: (row: MappedItem) => void;
+  columns: ColumnDef<MappedItem>[];
 }) {
   const id = useId();
   const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
   const [_highlightedRow, setHighlightedRow] = useState<number | null>(null);
+  const [severity, setSeverity] = useState<
+    "high" | "medium" | "low" | undefined
+  >(undefined);
 
   useEffect(() => {
     if (clickedRow && rowRefs.current.has(clickedRow.id)) {
@@ -109,7 +118,6 @@ function TableView({
       desc: false,
     },
   ]);
-  const [severity, setSeverity] = useState<string | undefined>(undefined);
 
   const table = useReactTable<MappedItem>({
     data: mappedItems,
@@ -155,19 +163,16 @@ function TableView({
     }
   };
 
-  const onSeverityChange = (value: string | undefined) => {
+  const onSeverityChange = (value: "high" | "medium" | "low" | undefined) => {
     setSeverity(value);
     filterItems(date, value);
   };
 
-  const filterItems = (
-    date: RangeValue<DateValue> | null,
-    severity: string | undefined
-  ) => {
+  const filterItems = (severity: "high" | "medium" | "low" | undefined) => {
     let filtered = mappedItemsList;
 
     if (severity) {
-      filtered = filtered.filter((item) => item.severity.includes(severity));
+      filtered = filtered.filter((item) => item.severity === severity);
     }
 
     setMappedItems(filtered);
@@ -187,12 +192,6 @@ function TableView({
   return (
     <div className="space-y-6 bg-background p-6 h-[200px] w-full">
       <div className="flex flex-row gap-3">
-        <div className="w-36">
-          <Filter
-            column={table.getColumn("severity")!}
-            onChange={onSeverityChange}
-          />
-        </div>
         <Popover>
           <div className="space-y-2 w-64">
             <Label htmlFor={`${id}-label`}>Date Range</Label>

@@ -20,3 +20,22 @@ body {
 .fade-in-out {
   animation: fadeInOut 3s forwards;
 }
+
+
+.mapboxgl-popup {
+  width: 20px;
+}
+
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: red !important;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  background-color: red !important;
+}

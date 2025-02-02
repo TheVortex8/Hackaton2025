@@ -1,10 +1,7 @@
 import { useState, useCallback } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import {
-  LayoutDashboard,
-  MapIcon,
-} from "lucide-react";
+import { LayoutDashboard, MapIcon, ReceiptTextIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { FileUploadView } from "./FileUploadView";
 import MapView from "./MapView";
@@ -26,7 +23,14 @@ export function SidebarLayout() {
       icon: (
         <MapIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
-    }
+    },
+    {
+      label: "Reports",
+      href: "/reports",
+      icon: (
+        <ReceiptTextIcon className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
   ];
   const [open, setOpen] = useState(false);
   return (
@@ -57,7 +61,7 @@ export const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium text-black dark:text-white whitespace-pre"
       >
-       Fire Watch
+        Fire Watch
       </motion.span>
     </Link>
   );
@@ -77,7 +81,7 @@ export const LogoIcon = () => {
 // Dummy dashboard component with content
 export const Dashboard = () => {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [responseData, setResponseData] = useState<{result: Item[]}>([]);
+  const [responseData, setResponseData] = useState<{ result: Item[] }>([]);
   const [clickedRow, setClickedRow] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -112,7 +116,6 @@ export const Dashboard = () => {
           : "flex flex-col w-full pl-6"
       }
     >
-      
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>
