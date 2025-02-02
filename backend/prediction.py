@@ -38,7 +38,7 @@ def create_model(environment_history_df_values: np.ndarray,severity_by_timestamp
   y = severity_by_timestamp
   X_train, X_test, y_train, y_test = train_test_split(X,y )
 
-  model = RandomForestClassifier(class_weight={0: 1, 1: 25, 2: 25, 3: 25}, random_state=42, min_samples_leaf=1, max_features='sqrt')
+  model = RandomForestClassifier(class_weight={0: 1, 1: 20, 2: 20, 3: 20}, random_state=42, min_samples_leaf=1, max_features='sqrt')
   smote = SMOTE(sampling_strategy={1: 3500, 2: 3500, 3: 3500},  random_state=42)
   new_X, new_Y = smote.fit_resample(X_train, y_train)
   
