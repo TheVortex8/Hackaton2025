@@ -48,9 +48,9 @@ def upload_file():
     try:
         file_df = pd.read_csv(file)
         file_df['location'] = file_df['location'].apply(lambda x: [float(coord) for coord in x.split(',')])
-        optimization_result = optimize(file_df, resources_df)
+        optimization_result, report = optimize(file_df, resources_df)
         cleaned_result = optimization_result.replace({np.nan: None}).to_dict(orient='records')
-        return jsonify({'result': cleaned_result}), 200
+        return jsonify({'result': cleaned_result, 'report': report}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
