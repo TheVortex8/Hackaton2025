@@ -5,7 +5,7 @@ import { useState } from "react";
 export function FileUploadView({
   onChange,
 }: {
-  onChange?: (files: File[], responseData?: any[]) => void;
+  onChange?: (files: File[], responseData?) => void;
 }) {
   const [files, setFiles] = useState<File[]>([]);
   const handleFileUpload = async (newFiles: File[]) => {

@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect, useId, useRef, useState } from "react";
-import { Filter } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   ColumnDef,
@@ -35,15 +34,8 @@ import { format } from "date-fns";
 import { RangeValue } from "@react-types/shared";
 import { DateRange, DateValue } from "@react-types/calendar";
 import { getLocalTimeZone, fromDate } from "@internationalized/date";
-import { columns as columnOptimize } from "@/components/ui/table/columns";
 import { MappedItem } from "@/type/mappedItem";
 import { Item } from "@/type/item";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-} from "@radix-ui/react-dropdown-menu";
 
 const itemsMapper = (item: Item) => ({
   id: item.id,
@@ -64,26 +56,18 @@ function TableView({
 }: {
   items: Item[];
   setItems: (items: Item[]) => void;
-  clickedRow: any;
+  clickedRow;
   onRowClick: (row: MappedItem) => void;
   columns: ColumnDef<MappedItem>[];
 }) {
   const id = useId();
   const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
-  const [_highlightedRow, setHighlightedRow] = useState<number | null>(null);
-  const [severity, setSeverity] = useState<
-    "high" | "medium" | "low" | undefined
-  >(undefined);
 
   useEffect(() => {
     if (clickedRow && rowRefs.current.has(clickedRow.id)) {
       const rowElement = rowRefs.current.get(clickedRow.id);
       if (rowElement) {
         rowElement.scrollIntoView({ behavior: "smooth", block: "center" });
-        setHighlightedRow(clickedRow.id);
-        setTimeout(() => {
-          setHighlightedRow(null);
-        }, 5000);
       }
     }
   }, [clickedRow]);
@@ -161,32 +145,6 @@ function TableView({
     } else {
       setMappedItems(mappedItemsList);
     }
-  };
-
-  const onSeverityChange = (value: "high" | "medium" | "low" | undefined) => {
-    setSeverity(value);
-    filterItems(date, value);
-  };
-
-  const filterItems = (severity: "high" | "medium" | "low" | undefined) => {
-    let filtered = mappedItemsList;
-
-    if (severity) {
-      filtered = filtered.filter((item) => item.severity === severity);
-    }
-
-    setMappedItems(filtered);
-    setItems(
-      filtered.map((item) => ({
-        id: item.id,
-        location: item.location,
-        severity: item.severity,
-        estimated_fire_start_time: item.estFireStartTime,
-        reported_time: item.timeOfReport,
-        deploy_time: item.estFireDelayTime,
-        cost: item.estCost,
-      }))
-    );
   };
 
   return (
