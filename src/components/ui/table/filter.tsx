@@ -2,7 +2,6 @@ import { SelectTrigger, SelectContent, SelectItem } from "@radix-ui/react-select
 import { Search } from "lucide-react";
 import { useId, useMemo } from "react";
 import { Label, Input, Select, SelectValue } from "react-aria-components";
-import { Column } from "react-stately";
 
 export function Filter({
     column,

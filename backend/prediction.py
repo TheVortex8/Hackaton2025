@@ -90,6 +90,8 @@ def generate_predictions(model: RandomForestClassifier):
       "estimated_fire_start_time": future_environment_df["timestamp"][index],
       "reported_time": future_environment_df["timestamp"][index],
       "location": location,
+      "latitude": latitude,
+      "longitude": longitude,
       "severity": severity_map_inversed[severity],   
     })
   

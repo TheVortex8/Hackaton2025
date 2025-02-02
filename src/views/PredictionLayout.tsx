@@ -6,24 +6,25 @@ import { Item } from "@/type/item";
 import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
 
 export const Prediction = () => {
-  // const [data, setData] = useState<{result: Item[]}>({result: []});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [clickedRow, setClickedRow] = useState<any>(null);
   const [data, setData] = useState<{ result: Item[] }>({ result: [] });
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await predict(true);
-      setData(result);
-    };
-    if (data.result.length === 0) {
-      fetchData();
+  const fetchData = async () => {
+    try{
+        const result = await predict(true);
+        console.log(result);
+        setData(result);
+    } catch (error) {
+        console.error("Error in fetchData:", error);
+    } finally {
+        setLoading(false);
     }
-  }, []);
+  }
 
-  //   const data = await predict(true);
+  useEffect(() => { fetchData(); }, []);
 
-  //   console.log(data);
   const handleRowClick = useCallback((row: any) => {
     setClickedRow(row);
     setIsDrawerOpen(true);
@@ -56,7 +57,7 @@ export const Prediction = () => {
       />
       {data.result.length > 0 && (
         <DrawerTable
-          items={data.result}
+          items={data?.result}
           setItems={(items) => setData({ result: items })}
           clickedRow={clickedRow}
           isOpen={isDrawerOpen}

@@ -30,7 +30,7 @@ const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
     });
 
     mapRef.current = map;
-
+    console.log("map crée", map[0])
     map.on("load", () => {
       // Add a source for the locations
       map.addSource("locations", {
