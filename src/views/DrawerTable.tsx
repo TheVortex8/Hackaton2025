@@ -67,10 +67,10 @@ function DrawerTable({
         <DrawerContent className="flex" clickedRow={clickedRow}>
           <div className="w-[95vw] self-end">
             <DrawerHeader className="flex flex-row">
-              <Card className="w-[14vw]">
+              <Card className="w-[14vw] border-grey-500">
                 <CardHeader>
                   <DrawerTitle>Total Cost</DrawerTitle>
-                  <DrawerDescription className="text-lg">
+                  <DrawerDescription className="text-lg text-black-500">
                     {(
                       reports.total_damage_costs +
                       reports.total_operational_costs
@@ -97,10 +97,10 @@ function DrawerTable({
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[14vw] border-red-500">
+              <Card className="w-[14vw] border-grey-500">
                 <CardHeader>
                   <DrawerTitle>Operational Cost</DrawerTitle>
-                  <DrawerDescription className="text-red-500 text-lg">
+                  <DrawerDescription className="text-grey-500 text-lg">
                     {reports.total_operational_costs.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",
@@ -108,10 +108,10 @@ function DrawerTable({
                   </DrawerDescription>
                 </CardHeader>
               </Card>
-              <Card className="w-[14vw] border-red-500">
+              <Card className="w-[14vw] border-grey-500">
                 <CardHeader>
                   <DrawerTitle>Damage Cost</DrawerTitle>
-                  <DrawerDescription className="text-red-500 text-lg">
+                  <DrawerDescription className="text-grey-500 text-lg">
                     {reports.total_damage_costs.toLocaleString("en-US", {
                       style: "currency",
                       currency: "USD",

@@ -12,18 +12,20 @@ export const Prediction = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    try{
-        const result = await predict(true);
-        console.log(result);
-        setData(result);
+    try {
+      const result = await predict(true);
+      console.log(result);
+      setData(result);
     } catch (error) {
-        console.error("Error in fetchData:", error);
+      console.error("Error in fetchData:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-  }
+  };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleRowClick = useCallback((row: any) => {
     setClickedRow(row);
@@ -47,7 +49,7 @@ export const Prediction = () => {
       className={
         data.result.length > 0
           ? "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
-          : "flex flex-col w-full pl-6"
+          : "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
       }
     >
       <MapView
