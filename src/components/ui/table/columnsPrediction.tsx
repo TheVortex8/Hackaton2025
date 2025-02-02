@@ -3,7 +3,7 @@ import { MappedItem } from "@/type/mappedItem";
 import { ColumnDef } from "@tanstack/table-core";
 import { Checkbox } from "react-aria-components";
 
-export const columnsOptimize: ColumnDef<MappedItem>[] = [
+export const columnsPrediction: ColumnDef<MappedItem>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -84,61 +84,6 @@ export const columnsOptimize: ColumnDef<MappedItem>[] = [
             second: "2-digit",
           }
         );
-      },
-      meta: {
-        filterVariant: "range",
-      },
-    },
-    {
-      header: "Time of Report",
-      accessorKey: "timeOfReport",
-      cell: ({ row }) => {
-        return new Date(row.getValue("timeOfReport")).toLocaleString("en-US", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        });
-      },
-      meta: {
-        filterVariant: "range",
-      },
-    },
-    {
-      header: "Estimated Fire Delay Time",
-      accessorKey: "estFireDelayTime",
-      cell: ({ row }) => {
-        const estFireStartTime = new Date(row.getValue("estFireStartTime"));
-        const timeOfReport = new Date(row.getValue("timeOfReport"));
-        const estFireDelayTime = Math.abs(
-          timeOfReport.getTime() - estFireStartTime.getTime()
-        );
-        const minutes = Math.floor(estFireDelayTime / (1000 * 60));
-        return `${minutes} minutes`;
-      },
-      meta: {
-        filterVariant: "range",
-      },
-      enableSorting: true,
-      sortingFn: (rowA, rowB) => {
-        const estFireDelayTimeA = Math.abs(
-          new Date(rowA.getValue("timeOfReport")).getTime() -
-            new Date(rowA.getValue("estFireStartTime")).getTime()
-        );
-        const estFireDelayTimeB = Math.abs(
-          new Date(rowB.getValue("timeOfReport")).getTime() -
-            new Date(rowB.getValue("estFireStartTime")).getTime()
-        );
-        return estFireDelayTimeA - estFireDelayTimeB;
-      },
-    },
-    {
-      header: "Estimated Cost",
-      accessorKey: "estCost",
-      cell: ({ row }) => {
-        return `$${(row.getValue("estCost") as number).toFixed(2)}`;
       },
       meta: {
         filterVariant: "range",

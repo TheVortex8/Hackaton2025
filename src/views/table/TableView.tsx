@@ -11,6 +11,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { Label } from "@/components/ui/label";
 import {
+  ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -34,11 +35,11 @@ import { format } from "date-fns";
 import { RangeValue } from "@react-types/shared";
 import { DateRange, DateValue } from "@react-types/calendar";
 import { getLocalTimeZone, fromDate } from "@internationalized/date";
-import { columns } from "@/components/ui/table/columns";
+import { columns as columnOptimize} from "@/components/ui/table/columns";
 import { MappedItem } from "@/type/mappedItem";
 import { Item } from "@/type/item";
 
-const itemsMapper = (item:Item) => ({
+const itemsMapper = (item: Item) => ({
   id: item.id,
   location: item.location,
   severity: item.severity,
@@ -53,11 +54,13 @@ function TableView({
   setItems,
   clickedRow,
   onRowClick,
+  columns,
 }: {
   items: Item[];
   setItems: (items: Item[]) => void;
   clickedRow: any;
-  onRowClick: (row: MappedItem) => void;
+  onRowClick: (row: MappedItem) => void; 
+  columns: ColumnDef<MappedItem>[] ;
 }) {
   const id = useId();
   const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
@@ -315,7 +318,6 @@ function TableView({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            (console.log(table.getRowModel().rows, clickedRow?.id),
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -333,7 +335,7 @@ function TableView({
                   </TableCell>
                 ))}
               </TableRow>
-            )))
+            ))
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

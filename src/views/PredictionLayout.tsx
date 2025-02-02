@@ -3,9 +3,9 @@ import DrawerTable from "./DrawerTable";
 import MapView from "./MapView";
 import { predict } from "@/api/backendService";
 import { Item } from "@/type/item";
+import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
 
 export const Prediction = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   // const [data, setData] = useState<{result: Item[]}>({result: []});
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [clickedRow, setClickedRow] = useState<any>(null);
@@ -44,7 +44,7 @@ export const Prediction = () => {
   return (
     <div
       className={
-        uploadedFiles.length > 0
+        data.result.length > 0
           ? "flex flex-col items-center h-[calc(100vh-6)] bg-white pl-16 pt-6 w-full"
           : "flex flex-col w-full pl-6"
       }
@@ -63,6 +63,7 @@ export const Prediction = () => {
           onClose={() => setIsDrawerOpen(false)}
           onButtonClick={handleButtonClick}
           onRowClick={handleRowClickFromTable}
+          column={columnsPrediction}
         />
       )}
     </div>

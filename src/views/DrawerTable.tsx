@@ -8,6 +8,9 @@ import {
 } from "@/components/ui/drawer";
 import { TableView } from "./table/TableView";
 import { Item } from "@/type/item";
+import { MappedItem } from "@/type/mappedItem";
+import { ColumnDef } from "@tanstack/table-core";
+import { columnsOptimize } from "@/components/ui/table/columns";
 
 type DrawerTableProps = {
   items: Item[];
@@ -17,6 +20,7 @@ type DrawerTableProps = {
   onClose: () => void;
   onButtonClick: () => void;
   onRowClick: (row: any) => void;
+  column?: ColumnDef<MappedItem>[]
 };
 
 function DrawerTable({
@@ -27,6 +31,7 @@ function DrawerTable({
   onClose,
   onButtonClick,
   onRowClick,
+  column = columnsOptimize,
 }: DrawerTableProps) {
   console.log(clickedRow);
   return (
@@ -52,6 +57,7 @@ function DrawerTable({
               setItems={setItems}
               clickedRow={clickedRow}
               onRowClick={onRowClick}
+              columns={column}
             />
           </div>
         </DrawerContent>

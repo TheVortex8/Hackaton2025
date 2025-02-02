@@ -8,6 +8,7 @@ from imblearn.over_sampling import SMOTE
 import os
 
 severity_map = {'': 0, 'low': 1, 'medium': 2, 'high': 3}
+severity_map_inversed = {1:'low', 2:'medium', 3:'high'}
 
 def get_environment_data(environment_history_df:pd.DataFrame) -> np.ndarray:
   return np.array([[environment_entry['temperature'],
@@ -74,6 +75,10 @@ def generate_predictions(model: RandomForestClassifier):
     if(severity == 0):
       continue
 
+
+    
+
+
     latitude = future_environment_df["latitude"][index]
     longitude = future_environment_df["longitude"][index]
 
@@ -85,7 +90,7 @@ def generate_predictions(model: RandomForestClassifier):
       "estimated_fire_start_time": future_environment_df["timestamp"][index],
       "reported_time": future_environment_df["timestamp"][index],
       "location": location,
-      "severity": severity,   
+      "severity": severity_map_inversed[severity],   
     })
   
   for i, row in enumerate(predictions):

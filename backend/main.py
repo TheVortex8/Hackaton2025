@@ -23,7 +23,7 @@ def predict():
         
         if model is None:
             raise RuntimeError('Please train the model first by calling /train')
-        return jsonify({'predictions': generate_predictions(model)}), 200
+        return jsonify({'result': generate_predictions(model)}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
