@@ -30,23 +30,15 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   getSortedRowModel,
-  RowData,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, ExternalLink, Search } from "lucide-react";
-
-declare module "@tanstack/react-table" {
-  //allows us to define custom properties for our columns
-  interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: "text" | "range" | "select";
-  }
-}
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
 
 export type Item = {
   id: string;
   location: Array<number>;
-  severity: Array<"High" | "Medium" | "Low">;
+  severity: Array<"high" | "medium" | "low">;
   estimated_fire_start_time: string;
   reported_time: string;
   deploy_time: number;
@@ -56,7 +48,7 @@ export type Item = {
 type MappedItem = {
   id: string;
   location: Array<number>;
-  severity: Array<"High" | "Medium" | "Low">;
+  severity: Array<"high" | "medium" | "low">;
   estFireStartTime: string;
   timeOfReport: string;
   estFireDelayTime: number;
@@ -70,7 +62,8 @@ const columns: ColumnDef<MappedItem>[] = [
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && "indeterminate") ||
+          false
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -98,18 +91,18 @@ const columns: ColumnDef<MappedItem>[] = [
       const severity = row.getValue("severity") as string;
       return (
         <div className="flex gap-1">
-          <div
+            <div
             className={cn(
-              "flex size-5 items-center justify-center rounded text-xs font-medium",
+              "flex h-5 items-center justify-center rounded px-2 text-xs font-medium",
               {
-                High: "bg-red-400/20 text-red-500",
-                Medium: "bg-yellow-400/20 text-yellow-500",
-                Low: "bg-green-400/20 text-green-500",
+                high: "bg-red-400/20 text-red-500",
+                medium: "bg-yellow-400/20 text-yellow-500",
+                low: "bg-green-400/20 text-green-500",
               }[severity]
             )}
-          >
+            >
             {severity}
-          </div>
+            </div>
         </div>
       );
     },
