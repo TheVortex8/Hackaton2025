@@ -3,6 +3,9 @@ import pandas as pd
 from optimize import optimize
 from resources import resources_df
 from flask_cors import CORS
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 CORS(app)

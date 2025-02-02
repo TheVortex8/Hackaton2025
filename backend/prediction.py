@@ -38,7 +38,7 @@ def initialize_model(environment_history_df_values: np.ndarray,severity_by_times
   y = severity_by_timestamp
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-  model = RandomForestClassifier(class_weight={0: 1, 1: 10, 2: 10, 3: 10}, random_state=42)
+  model = RandomForestClassifier(class_weight={0: 1, 1: 10, 2: 10, 3: 10}, random_state=42, min_samples_leaf=1, max_features='sqrt')
   model.fit(X_train, y_train)
 
   y_pred = model.predict(X_test)
