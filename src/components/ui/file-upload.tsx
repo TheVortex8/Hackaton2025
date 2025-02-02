@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { IconUpload } from "@tabler/icons-react";
+import { UploadIcon } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { UploadCloud } from "lucide-react";
 
@@ -143,10 +143,10 @@ export const FileUpload = ({
                       className="text-neutral-600 flex flex-col items-center"
                     >
                       Drop it
-                      <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
+                      <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                     </motion.p>
                   ) : (
-                    <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
+                    <UploadIcon className="h-4 w-4 text-neutral-600 dark:text-neutral-300" />
                   )}
                 </motion.div>
               )}

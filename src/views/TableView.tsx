@@ -34,8 +34,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { CalendarIcon, ChevronDown, ChevronUp, Search } from "lucide-react";
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { RangeCalendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { RangeValue } from "@react-types/shared";
@@ -212,7 +216,7 @@ const itemsMapper = (item) => ({
   timeOfReport: item.reported_time,
   estFireDelayTime: item.deploy_time,
   estCost: item.cost,
-})
+});
 function TableView({
   items,
   setItems,
@@ -245,12 +249,26 @@ function TableView({
   const [mappedItems, setMappedItems] = useState<MappedItem[]>(mappedItemsList);
 
   const [date, setDate] = useState<DateRange | null>({
-    start: fromDate(new Date(mappedItemsList.reduce((prev, curr) => 
-        new Date(curr.timeOfReport) < new Date(prev.timeOfReport) ? curr : prev
-    ).timeOfReport), getLocalTimeZone()),
-    end: fromDate(new Date(mappedItemsList.reduce((prev, curr) => 
-        new Date(curr.timeOfReport) > new Date(prev.timeOfReport) ? curr : prev
-    ).timeOfReport), getLocalTimeZone()),
+    start: fromDate(
+      new Date(
+        mappedItemsList.reduce((prev, curr) =>
+          new Date(curr.timeOfReport) < new Date(prev.timeOfReport)
+            ? curr
+            : prev
+        ).timeOfReport
+      ),
+      getLocalTimeZone()
+    ),
+    end: fromDate(
+      new Date(
+        mappedItemsList.reduce((prev, curr) =>
+          new Date(curr.timeOfReport) > new Date(prev.timeOfReport)
+            ? curr
+            : prev
+        ).timeOfReport
+      ),
+      getLocalTimeZone()
+    ),
   });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([
@@ -259,6 +277,7 @@ function TableView({
       desc: false,
     },
   ]);
+  const [severity, setSeverity] = useState<string | undefined>(undefined);
 
   const table = useReactTable<MappedItem>({
     data: mappedItems,
@@ -281,14 +300,47 @@ function TableView({
   const onDateChange = (value: RangeValue<DateValue>) => {
     setDate(value);
     if (value?.start && value?.end) {
-      const startDate = value.start.toDate('America/Montreal');
-      const endDate = value.end.toDate('America/Montreal');
+      const startDate = value.start.toDate("America/Montreal");
+      const endDate = value.end.toDate("America/Montreal");
       const filtered = mappedItemsList.filter((item) => {
         const itemDate = new Date(item.estFireStartTime);
         return itemDate >= startDate && itemDate <= endDate;
-      })
+      });
       setMappedItems(filtered);
-      setItems(filtered.map(item => ({
+      setItems(
+        filtered.map((item) => ({
+          id: item.id,
+          location: item.location,
+          severity: item.severity,
+          estimated_fire_start_time: item.estFireStartTime,
+          reported_time: item.timeOfReport,
+          deploy_time: item.estFireDelayTime,
+          cost: item.estCost,
+        }))
+      );
+    } else {
+      setMappedItems(mappedItemsList);
+    }
+  };
+
+  const onSeverityChange = (value: string | undefined) => {
+    setSeverity(value);
+    filterItems(date, value);
+  };
+
+  const filterItems = (
+    date: RangeValue<DateValue> | null,
+    severity: string | undefined
+  ) => {
+    let filtered = mappedItemsList;
+
+    if (severity) {
+      filtered = filtered.filter((item) => item.severity.includes(severity));
+    }
+
+    setMappedItems(filtered);
+    setItems(
+      filtered.map((item) => ({
         id: item.id,
         location: item.location,
         severity: item.severity,
@@ -296,50 +348,65 @@ function TableView({
         reported_time: item.timeOfReport,
         deploy_time: item.estFireDelayTime,
         cost: item.estCost,
-      })))
-    } else {
-      setMappedItems(mappedItemsList);
-    }
+      }))
+    );
   };
 
   return (
     <div className="space-y-6 bg-background p-6 h-[200px] w-full">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-row gap-3">
+        <div className="w-36">
+          <Filter
+            column={table.getColumn("severity")!}
+            onChange={onSeverityChange}
+          />
+        </div>
         <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              id={`${id}-label`}
-              variant={"outline"}
-              className={cn(
-                "group w-full justify-between bg-background px-3 font-normal outline-offset-0 hover:bg-background focus-visible:border-ring focus-visible:outline-[3px] focus-visible:outline-ring/20",
-                !date && "text-muted-foreground",
-              )}
-            >
-              <span className={cn("truncate", !date && "text-muted-foreground")}>
-                {date?.start ? (
-                  date.end ? (
-                    <>
-                      {format(date.start.toDate('America/Montreal'), "LLL dd, y")} - {format(date.end.toDate('America/Montreal'), "LLL dd, y")}
-                    </>
-                  ) : (
-                    format(date.start.toDate('America/Montreal'), "LLL dd, y")
-                  )
-                ) : (
-                  "Pick a date range"
+          <div className="space-y-2 w-64">
+            <Label htmlFor={`${id}-label`}>Date Range</Label>
+            <PopoverTrigger asChild>
+              <Button
+                id={`${id}-label`}
+                variant={"outline"}
+                className={cn(
+                  "group w-full justify-between bg-background px-3 font-normal outline-offset-0 hover:bg-background focus-visible:border-ring focus-visible:outline-[3px] focus-visible:outline-ring/20",
+                  !date && "text-muted-foreground"
                 )}
-              </span>
-              <CalendarIcon
-                size={16}
-                strokeWidth={2}
-                className="shrink-0 text-muted-foreground/80 transition-colors group-hover:text-foreground"
-                aria-hidden="true"
-              />
-            </Button>
-          </PopoverTrigger>
+              >
+                <span
+                  className={cn("truncate", !date && "text-muted-foreground")}
+                >
+                  {date?.start ? (
+                    date.end ? (
+                      <>
+                        {format(
+                          date.start.toDate("America/Montreal"),
+                          "LLL dd, y"
+                        )}{" "}
+                        -{" "}
+                        {format(
+                          date.end.toDate("America/Montreal"),
+                          "LLL dd, y"
+                        )}
+                      </>
+                    ) : (
+                      format(date.start.toDate("America/Montreal"), "LLL dd, y")
+                    )
+                  ) : (
+                    "Pick a date range"
+                  )}
+                </span>
+                <CalendarIcon
+                  size={16}
+                  strokeWidth={2}
+                  className="shrink-0 text-muted-foreground/80 transition-colors group-hover:text-foreground"
+                  aria-hidden="true"
+                />
+              </Button>
+            </PopoverTrigger>
+          </div>
           <PopoverContent className="w-auto p-2" align="start">
-            <RangeCalendar 
-              value={date}
-              onChange={onDateChange} />
+            <RangeCalendar value={date} onChange={onDateChange} />
           </PopoverContent>
         </Popover>
       </div>
@@ -451,7 +518,13 @@ function TableView({
   );
 }
 
-function Filter({ column }: { column: Column<any, unknown> }) {
+function Filter({
+  column,
+  onChange,
+}: {
+  column: Column<any, unknown>;
+  onChange: (value: string | undefined) => void;
+}) {
   const id = useId();
   const columnFilterValue = column.getFilterValue();
   const { filterVariant } = column.columnDef.meta ?? {};
@@ -484,12 +557,14 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             id={`${id}-range-1`}
             className="flex-1 rounded-e-none [-moz-appearance:_textfield] focus:z-10 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
             value={(columnFilterValue as [number, number])?.[0] ?? ""}
-            onChange={(e) =>
-              column.setFilterValue((old: [number, number]) => [
+            onChange={(e) => {
+              const newValue = [
                 e.target.value ? Number(e.target.value) : undefined,
-                old?.[1],
-              ])
-            }
+                (columnFilterValue as [number, number])?.[1],
+              ];
+              column.setFilterValue(newValue);
+              onChange(newValue.toString());
+            }}
             placeholder="Min"
             type="number"
             aria-label={`${columnHeader} min`}
@@ -498,12 +573,14 @@ function Filter({ column }: { column: Column<any, unknown> }) {
             id={`${id}-range-2`}
             className="-ms-px flex-1 rounded-s-none [-moz-appearance:_textfield] focus:z-10 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
             value={(columnFilterValue as [number, number])?.[1] ?? ""}
-            onChange={(e) =>
-              column.setFilterValue((old: [number, number]) => [
-                old?.[0],
+            onChange={(e) => {
+              const newValue = [
+                (columnFilterValue as [number, number])?.[0],
                 e.target.value ? Number(e.target.value) : undefined,
-              ])
-            }
+              ];
+              column.setFilterValue(newValue);
+              onChange(newValue.toString());
+            }}
             placeholder="Max"
             type="number"
             aria-label={`${columnHeader} max`}
@@ -520,7 +597,9 @@ function Filter({ column }: { column: Column<any, unknown> }) {
         <Select
           value={columnFilterValue?.toString() ?? "all"}
           onValueChange={(value) => {
-            column.setFilterValue(value === "all" ? undefined : value);
+            const newValue = value === "all" ? undefined : value;
+            column.setFilterValue(newValue);
+            onChange(newValue);
           }}
         >
           <SelectTrigger id={`${id}-select`}>
@@ -547,7 +626,11 @@ function Filter({ column }: { column: Column<any, unknown> }) {
           id={`${id}-input`}
           className="peer ps-9"
           value={(columnFilterValue ?? "") as string}
-          onChange={(e) => column.setFilterValue(e.target.value)}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            column.setFilterValue(newValue);
+            onChange(newValue);
+          }}
           placeholder={`Search ${columnHeader.toLowerCase()}`}
           type="text"
         />
