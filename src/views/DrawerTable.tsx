@@ -16,6 +16,7 @@ type DrawerTableProps = {
   isOpen: boolean;
   onClose: () => void;
   onButtonClick: () => void;
+  onRowClick: (row: any) => void;
 };
 
 function DrawerTable({
@@ -24,6 +25,7 @@ function DrawerTable({
   isOpen,
   onClose,
   onButtonClick,
+  onRowClick,
 }: DrawerTableProps) {
   console.log(clickedRow);
   return (
@@ -44,7 +46,11 @@ function DrawerTable({
                 Set your daily activity goal.
               </DrawerDescription>
             </DrawerHeader>
-            <TableView items={items} clickedRow={clickedRow} />
+            <TableView
+              items={items}
+              clickedRow={clickedRow}
+              onRowClick={onRowClick}
+            />
           </div>
         </DrawerContent>
       </Drawer>

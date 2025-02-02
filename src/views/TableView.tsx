@@ -1,4 +1,4 @@
-import { cn, colorMap } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -45,7 +45,7 @@ export type Item = {
   cost: number;
 };
 
-type MappedItem = {
+export type MappedItem = {
   id: number;
   location: Array<number>;
   severity: Array<"high" | "medium" | "low">;
@@ -94,7 +94,11 @@ const columns: ColumnDef<MappedItem>[] = [
           <div
             className={cn(
               "flex h-5 items-center justify-center rounded px-2 text-xs font-medium",
-              colorMap[severity]
+              {
+                high: "bg-red-400/20 text-red-500",
+                medium: "bg-orange-400/20 text-orange-500",
+                low: "bg-yellow-400/20 text-yellow-500",
+              }[severity]
             )}
           >
             {severity}
@@ -194,7 +198,15 @@ const columns: ColumnDef<MappedItem>[] = [
   },
 ];
 
-function TableView({ items, clickedRow }: { items: Item[]; clickedRow: any }) {
+function TableView({
+  items,
+  clickedRow,
+  onRowClick,
+}: {
+  items: Item[];
+  clickedRow: any;
+  onRowClick: (row: MappedItem) => void;
+}) {
   const rowRefs = useRef<Map<number, HTMLTableRowElement>>(new Map());
   const [highlightedRow, setHighlightedRow] = useState<number | null>(null);
 
@@ -210,6 +222,7 @@ function TableView({ items, clickedRow }: { items: Item[]; clickedRow: any }) {
       }
     }
   }, [clickedRow]);
+
   const mappedItemsList = items.map((item) => ({
     id: item.id,
     location: item.location,
@@ -362,6 +375,7 @@ function TableView({ items, clickedRow }: { items: Item[]; clickedRow: any }) {
                   row.original.id === clickedRow?.id ? "fade-in-out" : "",
                   row.getIsSelected() && "bg-yellow-500"
                 )}
+                onClick={() => onRowClick(row.original)}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

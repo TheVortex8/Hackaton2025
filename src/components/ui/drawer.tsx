@@ -38,12 +38,33 @@ const DrawerContent = React.forwardRef<
     clickedRow?: any;
   }
 >(({ className, children, clickedRow, ...props }, ref) => {
-  const [fullHeight, setFullHeight] = React.useState(false);
-  const [clickedRowState, setClickedRowState] = React.useState(clickedRow);
+  const [height, setHeight] = React.useState(800); // Initial height
 
   React.useEffect(() => {
-    setClickedRowState(clickedRow);
+    if (clickedRow) {
+      setHeight(800);
+    } else {
+      setHeight(400);
+    }
   }, [clickedRow]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const startY = e.clientY;
+    const startHeight = height;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const newHeight = startHeight + (startY - e.clientY);
+      setHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
 
   return (
     <DrawerPortal>
@@ -52,21 +73,15 @@ const DrawerContent = React.forwardRef<
         ref={ref}
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col border bg-background",
-          clickedRowState
-            ? "h-[800px]"
-            : fullHeight
-            ? "h-[800px]"
-            : "h-[400px]",
+          height,
           className
         )}
+        style={{ height: `${height}px` }}
         {...props}
       >
         <div
-          onClick={() => {
-            setFullHeight(!fullHeight);
-            setClickedRowState(null);
-          }}
-          className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted"
+          onMouseDown={handleMouseDown}
+          className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted cursor-ns-resize"
         />
         {children}
       </DrawerPrimitive.Content>

@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { MappedItem } from "./TableView";
 
 type MapViewProps = {
   table: Array<any>;
-  onRowClick: (row: any) => void; // Add this line
+  onRowClick: (row: any) => void;
+  clickedRow?: MappedItem | null;
 };
 
 const severityMap: { [key: string]: number } = {
@@ -13,19 +15,21 @@ const severityMap: { [key: string]: number } = {
   high: 5,
 };
 
-const MapView = ({ table, onRowClick }: MapViewProps) => {
-  // Update this line
+const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
   const mapContainerRef = useRef(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX; // Replace with your token
 
     const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
+      container: mapContainerRef.current!,
       style: "mapbox://styles/momolt/cm6mzqawt00nh01ry4yeb2fst/draft", // Change to other styles if needed
-      center: [-71.2082, 53.8139], // Longitude, Latitude for Quebec City
-      zoom: 4,
+      center: [-73.2082, 44.8139], // Longitude, Latitude for Quebec City
+      zoom: 7,
     });
+
+    mapRef.current = map;
 
     map.on("load", () => {
       // Add a source for the locations
@@ -98,6 +102,26 @@ const MapView = ({ table, onRowClick }: MapViewProps) => {
 
     return () => map.remove();
   }, [table, onRowClick]);
+
+  useEffect(() => {
+    if (clickedRow && mapRef.current) {
+      const map = mapRef.current;
+      const coordinates = [clickedRow.location[1], clickedRow.location[0]];
+
+      // Create a popup
+      const popup = new mapboxgl.Popup({ offset: 25 })
+        .setLngLat(coordinates)
+        .setHTML(
+          `<h3>${clickedRow.location}</h3><p>Severity: ${clickedRow.severity}</p>`
+        )
+        .addTo(map);
+
+      // Fly to the location of the clicked row
+      map.flyTo({ center: coordinates, zoom: 10 });
+
+      return () => popup.remove();
+    }
+  }, [clickedRow]);
 
   return (
     <div className="w-[91vw] border rounded-lg overflow-hidden">

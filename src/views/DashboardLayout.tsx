@@ -115,8 +115,16 @@ export const Dashboard = () => {
   };
 
   const handleRowClick = useCallback((row: any) => {
+    console.log(clickedRow);
     setClickedRow(row);
     setIsDrawerOpen(true);
+    console.log("Row clicked in Dashboard:", row);
+  }, []);
+
+  const handleRowClickFromTable = useCallback((row: any) => {
+    console.log(clickedRow);
+    setClickedRow(row);
+    setIsDrawerOpen(false);
     console.log("Row clicked in Dashboard:", row);
   }, []);
 
@@ -135,13 +143,18 @@ export const Dashboard = () => {
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>
-          <MapView table={responseData?.result} onRowClick={handleRowClick} />
+          <MapView
+            table={responseData?.result}
+            onRowClick={handleRowClick}
+            clickedRow={clickedRow}
+          />
           <DrawerTable
             items={responseData.result}
             clickedRow={clickedRow}
             isOpen={isDrawerOpen}
             onClose={() => setIsDrawerOpen(false)}
             onButtonClick={handleButtonClick}
+            onRowClick={handleRowClickFromTable}
           />
         </>
       )}
