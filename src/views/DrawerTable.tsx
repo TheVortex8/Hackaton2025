@@ -63,10 +63,11 @@ function DrawerTable({
       >
         Visualize Data
       </Button>
-      {reports && (
-        <Drawer open={isOpen} onOpenChange={onClose}>
-          <DrawerContent className="flex" clickedRow={clickedRow}>
-            <div className="w-[95vw] self-end">
+
+      <Drawer open={isOpen} onOpenChange={onClose}>
+        <DrawerContent className="flex" clickedRow={clickedRow}>
+          <div className="w-[95vw] self-end">
+            {reports && (
               <DrawerHeader className="flex flex-row">
                 <Card className="w-[14vw] border-grey-500">
                   <CardHeader>
@@ -133,17 +134,17 @@ function DrawerTable({
                   </CardHeader>
                 </Card>
               </DrawerHeader>
-              <TableView
-                items={items}
-                setItems={setItems}
-                clickedRow={clickedRow}
-                onRowClick={onRowClick}
-                columns={column}
-              />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      )}
+            )}
+            <TableView
+              items={items}
+              setItems={setItems}
+              clickedRow={clickedRow}
+              onRowClick={onRowClick}
+              columns={column}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
