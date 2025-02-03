@@ -1,9 +1,11 @@
-# ConUHacks 2025 - SAP Challenge
+# FireWatch 🔥
+## SAP Challenge Winner 🏆- ConUHacks 2025 
 Challenge: Create a platform to optimize the deployment of firefighting resources.
 - Part 1: Minimize the total cost and the number of high severity missed responses. Contraints include the cost per unit deployment, cost of missing a fire, the severity of the fire.
 - Part 2: Use machine learning to predict future fires based on historical environmental and wildfire data. The model should be able to predict the severity of the fire and the location of the fire. We want to easily visualize the predictions on a map.
 
-## Frontend Setup
+Submission Project: https://devpost.com/software/firewatch-qn4yap
+### Frontend Setup
 Prerequisite: Node.js
 
 - Run `cp .env.example .env` 
@@ -12,7 +14,7 @@ Prerequisite: Node.js
 - Run `npm run dev`
 - Naviguate to `http://localhost:5173`
 
-## Backend Setup
+### Backend Setup
 Prerequisite: Python
 
 - Open a new terminal
@@ -25,7 +27,7 @@ Prerequisite: Python
 - Run `python main.py` (or maybe `python3 main.py`)
 - API is now running on `http://localhost:5000`
 
-## Team Members
+### Team Members
 - Mohamed Amine Elarabi
 - Mohammed Larbi Turki
 - Abdul Rahman Zahid
