@@ -1,4 +1,5 @@
 import { upload } from "@/api/backendService";
+import { DownloadButton } from "@/components/ui/download-button";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 
@@ -29,9 +30,10 @@ export function FileUploadView({
         className={
           files.length > 0
             ? "text-neutral-700 dark:text-neutral-200 text-center"
-            : "w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-background border-neutral-200 dark:border-neutral-800 rounded-lg"
+            : "relative w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-background border-neutral-200 dark:border-neutral-800 rounded-lg"
         }
       >
+        {!(files.length > 0) && <DownloadButton />}
         <FileUpload onChange={handleFileUpload} />
       </div>
     </div>

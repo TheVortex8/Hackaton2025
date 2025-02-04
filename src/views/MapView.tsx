@@ -1,12 +1,13 @@
-import { useEffect, useRef } from "react";
+import { MappedItem } from "@/type/mappedItem";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { MappedItem } from "@/type/mappedItem";
+import { useEffect, useRef, useState } from "react";
 
 type MapViewProps = {
   table;
   onRowClick: (row) => void;
   clickedRow?: MappedItem | null;
+  loading?: boolean;
 };
 
 const severityMap: { [key: string]: number } = {
@@ -15,9 +16,10 @@ const severityMap: { [key: string]: number } = {
   high: 5,
 };
 
-const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
+const MapView = ({ table, onRowClick, clickedRow, loading }: MapViewProps) => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [isLoading, setIsLoading] = useState(loading);
 
   useEffect(() => {
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX; // Replace with your token
@@ -75,12 +77,15 @@ const MapView = ({ table, onRowClick, clickedRow }: MapViewProps) => {
       });
 
       // Add click event listener for the circles
+      
       map.on("click", "locations", (e) => {
         const features = map.queryRenderedFeatures(e.point, {
           layers: ["locations"],
         });
 
-        if (features.length) {
+        if (features.length && !isLoading) {
+          console.log(isLoading)
+          console.log("Clicked feature:", features[0]);
           const clickedFeature = features[0];
           const rowIndex = clickedFeature.properties.rowIndex;
           const clickedRow = table[rowIndex];

@@ -1,16 +1,17 @@
+import { predict } from "@/api/backendService";
+import { Button } from "@/components/ui/button";
+import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
+import { Item } from "@/type/item";
+import { LoaderCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import DrawerTable from "./DrawerTable";
 import MapView from "./MapView";
-import { predict } from "@/api/backendService";
-import { Item } from "@/type/item";
-import { columnsPrediction } from "@/components/ui/table/columnsPrediction";
-import { Button } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 
 export const Prediction = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [clickedRow, setClickedRow] = useState(null);
   const [data, setData] = useState<{ result: Item[] }>({ result: [] });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
     
   const fetchData = async (regenerate:boolean = false) => {
     try {
@@ -44,7 +45,9 @@ export const Prediction = () => {
   }, []);
 
   const regenerateData = async () => {
+    setIsLoading(true);
     await fetchData(true);
+    setIsLoading(false);
   }
 
 
@@ -59,17 +62,28 @@ export const Prediction = () => {
       <Button
         variant="outline"
         onClick={regenerateData}
-        style={{zIndex: 10, position: "absolute", bottom: "80%", right: "9%", scale: "2"}}
+        disabled={isLoading}
+      data-loading={isLoading}
+      className="group disabled:opacity-100 z-10 absolute top-[5.5vh] right-[4vw] scale-1.5"
+        
       >
-        <RefreshCcw />
+        <span className="group-data-[loading=true]:text-transparent">Regenerate Data</span>
+        {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          Renerating...&nbsp;
+          <LoaderCircle className="animate-spin" size={16} strokeWidth={2} aria-hidden="true" />
+        </div>
+      )}
       </Button>
       <MapView
+        loading={isLoading}
         table={data?.result}
         onRowClick={handleRowClick}
         clickedRow={clickedRow}
       />
       <DrawerTable
         items={data?.result}
+        loading={isLoading}
         setItems={(items) => setData({ result: items })}
         clickedRow={clickedRow}
         isOpen={isDrawerOpen}

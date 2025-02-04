@@ -1,16 +1,17 @@
-import { useState, useCallback, useEffect } from "react";
+import { DownloadButton } from "@/components/ui/download-button";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { Item } from "@/type/item";
+import { motion } from "framer-motion";
 import {
   FlameIcon,
   LayoutDashboard,
   MapIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import DrawerTable from "./DrawerTable";
 import { FileUploadView } from "./FileUploadView";
 import MapView from "./MapView";
-import DrawerTable from "./DrawerTable";
-import { Item } from "@/type/item";
 
 export function SidebarLayout() {
   const links = [
@@ -119,6 +120,7 @@ export const Dashboard = ({ onReportChange }) => {
           : "flex flex-col w-full pl-6"
       }
     >
+      
       <FileUploadView onChange={handleFileUpload} />
       {uploadedFiles.length > 0 && (
         <>

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader } from "@/components/ui/card";
 import {
   Drawer,
   DrawerContent,
@@ -6,12 +7,11 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { TableView } from "./table/TableView";
+import { columnsOptimize } from "@/components/ui/table/columns";
 import { Item } from "@/type/item";
 import { MappedItem } from "@/type/mappedItem";
 import { ColumnDef } from "@tanstack/table-core";
-import { columnsOptimize } from "@/components/ui/table/columns";
-import { Card, CardHeader } from "@/components/ui/card";
+import { TableView } from "./table/TableView";
 
 export type Reports = {
   fires_addressed: number;
@@ -32,6 +32,7 @@ export type Reports = {
 
 type DrawerTableProps = {
   items: Item[];
+  loading?: boolean;
   reports?: Reports;
   setItems: (items) => void;
   clickedRow;
@@ -44,6 +45,7 @@ type DrawerTableProps = {
 
 function DrawerTable({
   items,
+  loading,
   reports,
   setItems,
   clickedRow,
@@ -59,7 +61,9 @@ function DrawerTable({
       <Button
         variant="outline"
         onClick={onButtonClick}
-        className="absolute bottom-10"
+        className="absolute disabled:opacity-50 bottom-10"
+        disabled={loading}
+        data-loading={loading}
       >
         Visualize Data
       </Button>
